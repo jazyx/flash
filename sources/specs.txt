@@ -1,0 +1,62 @@
+Show Russian first
+  No image
+  Hint = letter, letter, image
+
+Show English text
+  Show image
+  Hint = letter, letter, audio
+
+Show image
+  Hint = letter, letter, audio
+
+Settings
+  Show
+    English text (+ image)
+    Just image
+    Russian text
+  Stats
+    [Set time scale: day, 3 days, week, month, all time]
+    Times shown
+    Times correct
+    Hints needed
+    Speed
+    Checkbox to include in future tests 
+
+
+English cue layout
+Hint                Turn
+
+Russian cue layout
+Hint Audio          Turn
+
+
+
+English reveal layout
+Turn       Learnt> Repeat>
+
+Russian reveal layout
+Turn Audio Learnt> Repeat>
+
+—————
+
+Categorize
+  By theme
+  By student
+  By date
+  By level
+
+—————
+
+Repeat
+  Repeat sooner the higher the number of errors in the last n days
+  = record errors by timestamp
+
+  Disallow Learnt if recent error count too high (or repeat later than default)
+
+—————
+
+CSS
+  Animate card turn
+  Place buttons
+  Animate buttons
+  Fit aspect

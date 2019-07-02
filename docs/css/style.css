@@ -1,0 +1,111 @@
+body { 
+  background-color: #000;
+  color: #fff;
+}
+
+
+section#splash.active {
+    background-color: #000;
+    display: flex;
+}
+
+section#splash img {
+    width: 100vmin;
+}
+
+@media (min-aspect-ratio: 1/1) {
+  section.splash img {
+      height: 100vmin;
+      width: auto;
+  }
+}
+
+sup {
+  font-size: 4vmin;
+}
+
+section#card > div {
+  width: 100vw;
+  display: flex;
+}
+
+div.text {
+  /*background-color: #fcc;*/
+  height: 80vh;
+  justify-content: center;
+  align-items: center;
+  font-size: 15vmin;
+  text-align: center;
+}
+
+p {
+  margin: 0;
+}
+
+div.text span {
+  display: block;
+  font-size: 6vmin;
+  color: #666;
+}
+
+
+body.complete div.text {
+  color: goldenrod;
+}
+
+body.complete div.done {
+  background-color: goldenrod;
+}
+
+
+body.complete div.buttons {
+  opacity: 0;
+}
+
+
+div.buttons {
+  position: fixed;
+  bottom: 0;
+  height: 18vh;
+  justify-content: space-between;
+}
+
+div.buttons img{
+  width: 18vh;
+  max-width: 25vw;
+}
+
+div.buttons div{
+  width: 100%;
+  display: none;
+  justify-content: space-between;
+}
+
+div.buttons div.active{
+  display: flex;
+}
+
+/* TEMPORARY  */
+[href='#audio'],
+[href='#hint'] {
+  opacity: 0.2;
+}
+
+div.en [href='#audio']{
+  opacity: 0.1;
+}
+
+div.progress {
+  position: fixed;
+  top: 80vh;
+  height: 2vh;
+  width: 100%;
+  background-color: #333;
+}
+
+div.done {
+  bottom: 0;
+  height: 100%;
+  width: 0%;
+  background-color: #fff;
+}

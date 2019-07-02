@@ -1,0 +1,3 @@
+Through Settings, we set whether to start with Russian cue or English cue. Settings are saved as localStorage.
+
+We read localStorage to see if stimulus should be "ru" or not. this.stimulus is set to whatever value. If it 

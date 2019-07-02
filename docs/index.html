@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+  <meta charset="utf-8">
+  <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+  <title>Флэшкарточки</title>
+
+  <meta property="og:site_name" content="Russkiy Fun"/>
+  <meta property="og:title" content="Флэшкарточки"/>
+  <meta property="og:description" content="Flashcards for learn ingRussian"/>
+  <meta property="og:image" content="https://russkiy.fun/flash/img/logo.png">
+  <meta property="og:url" content="https://russkiy.fun/flash/index.html">
+  <meta property="og:type" content="website"/>
+
+  <link rel="stylesheet" type="text/css" href="css/aspect_ratio.css">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+
+<body>
+  <main>
+    <section id="splash" class="active">
+      <img src="img/logo.png">
+    </section>
+
+    <section id="card">
+      <div class="text">Text to display</div>
+
+      <div class="progress">
+        <div class="done"></div>
+      </div>
+      
+      <div class="buttons">
+        <div id="stimulus" class="en active">
+          <a href="#hint" class="action">
+            <img src="img/hint.svg">
+          </a>
+          <a href="#audio" class="action">
+            <img src="img/audio.svg">
+          </a>
+          <img src="img/spacer.svg">
+          <a href="#turn" class="action">
+            <img src="img/turn.svg">
+          </a>
+        </div>
+
+        <div id="response" class="ru">
+          <a href="#turn_back" class="action">
+            <img src="img/turn_back.svg">
+          </a>
+
+          <a href="#audio" class="action">
+            <img src="img/audio.svg">
+          </a>
+
+          <a href="#learnt" class="action">
+            <img src="img/learnt.svg">
+          </a>
+
+          <a href="#repeat" class="action">
+            <img src="img/repeat.svg">
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="settings">
+      
+    </div>
+
+    <audio><img src="img/no_audio.svg"></audio>
+
+
+    <!-- Words left to learn counter/progress bar -->
+    <!-- audio element -->
+  </main>
+
+<script src="js/flash.js"></script>
+</body>
+</html>
