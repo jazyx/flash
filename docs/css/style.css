@@ -30,7 +30,6 @@ section#card > div {
 }
 
 div.text {
-  /*background-color: #fcc;*/
   height: 80vh;
   justify-content: center;
   align-items: center;
@@ -65,7 +64,7 @@ body.complete div.buttons {
 
 div.buttons {
   position: fixed;
-  bottom: 0;
+  top: 82vh;
   height: 18vh;
   justify-content: space-between;
 }
