@@ -209,7 +209,7 @@
  
 
   jazyx.classes.AudioButton = class AudioButton {
-    constructor(player, button) {
+    constructor(player, button, folder) {
       this.player = player
       this.button = button
       this.initialize()
