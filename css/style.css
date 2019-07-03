@@ -119,7 +119,6 @@ div.done {
 
 .frame {
   background-color: transparent;
-  width: 100vw;
   height: 80vh;
   perspective: 500vmax;
 
@@ -134,13 +133,14 @@ div.done {
   width: 100%;
   height: 100%;
   text-align: center;
-  transition: transform 0.6s;
+  transition: transform 0.01s;
   transform-style: preserve-3d;
   box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
 }
 
 .frame.response .card {
-  transform: rotateY(180deg);
+  transform: rotateY(-180deg);
+  transition: transform 0.6s;
 }
 
 .front, .back {
@@ -167,9 +167,8 @@ div.done {
 .back {
   background-color: #d2b686;
   background-image: url("../img/dark.jpg");
-  transform: rotateY(180deg);
+  transform: rotateY(-180deg);
 }
-
 
 
 
@@ -180,10 +179,10 @@ div.done {
   }
 
   .frame.response .card {
-    transform: rotateX(180deg);
+    transform: rotateX(-180deg);
   }
 
   .back {
-    transform: rotateX(180deg);
+    transform: rotateX(-180deg);
   }
 }
