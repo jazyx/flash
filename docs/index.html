@@ -28,52 +28,41 @@
       <div class="progress">
         <div class="done"></div>
       </div>
-      
-      <div class="buttons">
-        <div id="stimulus" class="en active">
-          <a href="#hint" class="action">
+
+      <div class="buttons stimulus">
+          <a href="#hint" class="action stimulus">
             <img src="img/hint.svg">
           </a>
-          <a href="#audio" class="action">
-            <img src="img/audio.svg">
-          </a>
-          <img src="img/spacer.svg">
-          <a href="#turn" class="action">
-            <img src="img/turn.svg">
-          </a>
-        </div>
-
-        <div id="response" class="ru">
-          <a href="#turn_back" class="action">
+          <a href="#turn_back" class="action response">
             <img src="img/turn_back.svg">
           </a>
 
-          <a href="#audio" class="action">
+          <a href="#audio">
             <img src="img/audio.svg">
           </a>
 
-          <a href="#learnt" class="action">
+          <a href="#null" class="action stimulus">
+            <img src="img/spacer.svg">
+          </a>
+          <a href="#learnt" class="action response">
             <img src="img/learnt.svg">
           </a>
 
-          <a href="#repeat" class="action">
+          <a href="#turn" class="action stimulus">
+            <img src="img/turn.svg">
+          </a>
+          <a href="#repeat" class="action response">
             <img src="img/repeat.svg">
           </a>
-        </div>
       </div>
     </section>
 
     <div class="settings">
-      
+      <!-- TODO -->
     </div>
-
-    <audio><img src="img/no_audio.svg"></audio>
-
-
-    <!-- Words left to learn counter/progress bar -->
-    <!-- audio element -->
   </main>
 
+<script src="js/audio.js"></script>
 <script src="js/flash.js"></script>
 </body>
 </html>

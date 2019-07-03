@@ -10,7 +10,7 @@ Show image
   Hint = letter, letter, audio
 
 Settings
-  Show
+  Stimulus
     English text (+ image)
     Just image
     Russian text
@@ -21,6 +21,10 @@ Settings
     Hints needed
     Speed
     Checkbox to include in future tests 
+  Display
+    Font size
+  Repeat rate
+  Play audio automatically
 
 
 English cue layout
@@ -51,7 +55,7 @@ Repeat
   Repeat sooner the higher the number of errors in the last n days
   = record errors by timestamp
 
-  Disallow Learnt if recent error count too high (or repeat later than default)
+  Disallow Learnt if recent error count too high (or simply delay repeat when Learnt is requested)
 
 —————
 

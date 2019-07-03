@@ -1,6 +1,6 @@
 /** flash.js **
  *
- * 
+ *
 **/
 
 
@@ -21,11 +21,12 @@
 
 
 
+
   jazyx.classes.Flash = class Flash {
-    constructor() {
+    constructor(audioButton) {
+      this.audioButton = audioButton
       this.initialize()
       // this.sections = {...}
-      // this.cardFaces = {...}
       // this.text = div element
       // this.cards = [...]
       // this.card = 0
@@ -45,8 +46,7 @@
       })
 
       this.sections = this.getElements("section")
-      this.cardFaces = this.getElements("div.buttons > div")
-      console.log(this.cardFaces)
+      this.buttons = document.querySelector(".buttons")
 
       this.text = document.querySelector("div.text")
       this.progress = document.querySelector("div.done")
@@ -56,6 +56,7 @@
       this.card = 0
       this.minCount = 10
       this.stimulus = "en"
+      this.cueIsRussian = (this.stimulus === "ru")
 
       this.complete = false
     }
@@ -142,14 +143,20 @@
 
 
     turnCard() {
-      this.showCue(this.stimulus !== "ru")
-      this.showItem("response", this.cardFaces)
+      this.showCue(!this.cueIsRussian)
+      this.playCue(!this.cueIsRussian)
+
+      this.buttons.classList.remove("stimulus")
+      this.buttons.classList.add("response")
     }
 
 
     turnBack() {
-      this.showCue(this.stimulus === "ru")
-      this.showItem("stimulus", this.cardFaces)
+      this.showCue(this.cueIsRussian)
+      this.playCue(this.cueIsRussian)
+
+      this.buttons.classList.remove("response")
+      this.buttons.classList.add("stimulus")
     }
 
 
@@ -168,9 +175,7 @@
         return this.finish()
       }
 
-      this.showCue()
-
-      this.showItem("stimulus", this.cardFaces)
+      this.turnBack()
     }
 
 
@@ -181,8 +186,8 @@
     }
 
 
-    showCue(isRu) {
-      let text =  isRu
+    showCue(isRussian) {
+      let text = isRussian
                ? this.card.ru
                : this.card.en
       text = text.replace(" f ", "<sup>(formal)</sup> ")
@@ -194,10 +199,19 @@
         text = text.substring(0, index)
              + "<span>" + text.substring(index + 1) + "<span>"
       }
-      
+
       text = "<p>" + text + "</p>"
 
       this.text.innerHTML = text
+    }
+
+
+    playCue(isRussian) {
+      if (isRussian) {
+        this.audioButton.link(this.card.audio, "play")
+      } else {
+        this.audioButton.toggleEnabled(false)
+      }
     }
 
 
@@ -225,75 +239,75 @@
       return [
         { "en":"What is your f name?"
         , "ru": "Как вас зовут?"
-        , "audio": "xxxx.mp3"
+        , "audio": "1.mp3"
         }
       , { "en":"My name is..."
         , "ru": "Меня зовут..."
-        , "audio": "xxxx.mp3"
+        , "audio": "2.mp3"
         }
       , { "en":"Excuse f me"
         , "ru": "Извините"
-        , "audio": "xxxx.mp3"
+        , "audio": "3.mp3"
         }
       , { "en":"What is your inf name?"
         , "ru": "Как тебя зовут?"
-        , "audio": "xxxx.mp3"
+        , "audio": "4.mp3"
         }
       , { "en":"I have..."
         , "ru": "У меня есть.."
-        , "audio": "xxxx.mp3"
+        , "audio": "5.mp3"
         }
       , { "en":"Excuse inf me"
         , "ru": "Извини"
-        , "audio": "xxxx.mp3"
+        , "audio": "6.mp3"
         }
       , { "en":"You f have..."
         , "ru": "У вас есть..."
-        , "audio": "xxxx.mp3"
+        , "audio": "7.mp3"
         }
       , { "en":"You inf have..."
         , "ru": "У тебя есть..."
-        , "audio": "xxxx.mp3"
+        , "audio": "8.mp3"
         }
       , { "en":"You inf have money "
         , "ru": "У тебя есть деньги"
-        , "audio": "xxxx.mp3"
+        , "audio": "9.mp3"
         }
       , { "en":"I have a job"
         , "ru": "У меня есть работа"
-        , "audio": "xxxx.mp3"
+        , "audio": "1.mp3"
         }
       , { "en":"to speak"
         , "ru": "говорить"
-        , "audio": "xxxx.mp3"
+        , "audio": "2.mp3"
         }
       , { "en":"Do you inf have any children?"
         , "ru": "У вас есть дети?"
-        , "audio": "xxxx.mp3"
+        , "audio": "3.mp3"
         }
       , { "en":"to work "
         , "ru": "работать"
-        , "audio": "xxxx.mp3"
+        , "audio": "4.mp3"
         }
       , { "en":"I speak Russian a little bit"
         , "ru": "Я немного говорю по-русски"
-        , "audio": "xxxx.mp3"
+        , "audio": "5.mp3"
         }
       , { "en":"to live"
         , "ru": "жить"
-        , "audio": "xxxx.mp3"
+        , "audio": "6.mp3"
         }
       , { "en":"I work in Moscow"
         , "ru": "Я работаю в Москве."
-        , "audio": "xxxx.mp3"
+        , "audio": "7.mp3"
         }
       , { "en":"to have lunch"
         , "ru": "обедать"
-        , "audio": "xxxx.mp3"
+        , "audio": "8.mp3"
         }
       , { "en":"I live in Russia"
         , "ru": "Я живу в России"
-        , "audio": "xxxx.mp3"
+        , "audio": "9.mp3"
         }
       , { "en":"to get up"
         , "ru": "вставать"
@@ -547,7 +561,13 @@
     }
   }
 
+  /// <<< HARD-CODED
+  let player = new jazyx.classes.AudioPlayer("audio/")
+  let button = new jazyx.classes.PlayButton("[href='#audio']")
+  /// HARD-CODED >>>
 
-  jazyx.flash = new jazyx.classes.Flash()
+  let audioButton = new jazyx.classes.AudioButton(player, button)
+
+  jazyx.flash = new jazyx.classes.Flash(audioButton)
 
 })(window)

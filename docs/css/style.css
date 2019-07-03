@@ -84,14 +84,31 @@ div.buttons div.active{
   display: flex;
 }
 
-/* TEMPORARY  */
-[href='#audio'],
-[href='#hint'] {
-  opacity: 0.2;
+
+div.stimulus a.response,
+div.response a.stimulus {
+  display: none;
 }
 
-div.en [href='#audio']{
-  opacity: 0.1;
+div [href='#audio'] img {
+  box-sizing: border-box;
+  border: 1vh outset #999;
+  border-radius: 5vh;
+}
+
+div [href='#audio'].down img {
+  border-style: inset;
+}
+
+/* TEMPORARY  */
+div [href='#hint'] img,
+/* TEMPORARY  */
+div [href='#null'] img,
+div [href='#audio'].disabled img {
+  opacity: 0.25;
+  border-style: solid;
+  cursor: default;
+  box-sizing: border-box;
 }
 
 div.progress {
