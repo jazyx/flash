@@ -31,7 +31,7 @@
       // this.cards = [...]
       // this.card = 0
       // this.minCount = 10
-      // this.stimulus = "en"
+      // this.cueCode = "en"
 
       this.hideSplash()
       this.showNext()
@@ -48,191 +48,204 @@
       this.sections = this.getElements("section")
       this.buttons = document.querySelector(".buttons")
 
-      this.text = document.querySelector("div.text")
+      this.frame = document.querySelector("div.frame")
+      this.stimulus = document.querySelector("div.front")
+      this.response = document.querySelector("div.back")
       this.progress = document.querySelector("div.done")
 
       this.cards = this.cards()
       this.total = this.cards.length
       this.card = 0
       this.minCount = 10
-      this.stimulus = "en"
-      this.cueIsRussian = (this.stimulus === "ru")
+      this.cueCode = "en"
+      this.cueIsRussian = (this.cueCode === "ru")
 
       this.complete = false
     }
 
 
-    getElements(selector) {
-      let elements = {}
-      let array = [].slice.call(document.querySelectorAll(selector))
+    // SECTIONS // SECTIONS // SECTIONS // SECTIONS // SECTIONS //
 
-      array.forEach(element => {
-        elements[element.id] = element
-      })
+      getElements(selector) {
+        let elements = {}
+        let array = [].slice.call(document.querySelectorAll(selector))
 
-      return elements
-    }
+        array.forEach(element => {
+          elements[element.id] = element
+        })
 
-
-    hideSplash() {
-      let delay = 1000
-
-      setTimeout(this.showCard.bind(this), delay)
-    }
+        return elements
+      }
 
 
-    showCard() {
-      this.showItem("card", this.sections)
-    }
+      hideSplash() {
+        let delay = 1000
+
+        setTimeout(this.showCard.bind(this), delay)
+      }
 
 
-    showItem(id, group) {
-      let ids = Object.keys(group)
-      ids.forEach(itemId => {
-        let item = group[itemId]
-        if (itemId === id) {
-          item.classList.add("active")
-        } else {
-          item.classList.remove("active")
+      showCard() {
+        this.showItem("card", this.sections)
+      }
+
+
+      showItem(id, group) {
+        let ids = Object.keys(group)
+        ids.forEach(itemId => {
+          let item = group[itemId]
+          if (itemId === id) {
+            item.classList.add("active")
+          } else {
+            item.classList.remove("active")
+          }
+        })
+      }
+
+    // ACTIONS // ACTIONS // ACTIONS // ACTIONS // ACTIONS // ACTIONS 
+
+      treatAction(event) {
+        event.preventDefault()
+
+        if (this.complete) {
+          return
         }
-      })
-    }
 
+        let target = event.target
+        while (target && target.tagName !== "A") {
+          target = target.parentNode
+        }
 
-    treatAction(event) {
-      event.preventDefault()
+        if (!target) {
+          return
+        }
 
-      if (this.complete) {
-        return
-      }
+        let href = target.href
+        let index = href.indexOf("#") + 1
+        let hash = href.substring(index)
 
-      let target = event.target
-      while (target && target.tagName !== "A") {
-        target = target.parentNode
-      }
+        switch (hash) {
+          case "turn_back":
+            this.turnBack()
+          break
+          case "turn":
+            this.turnCard()
+          break
+          case "hint":
 
-      if (!target) {
-        return
-      }
+          break
+          case "audio":
 
-      let href = target.href
-      let index = href.indexOf("#") + 1
-      let hash = href.substring(index)
-
-      switch (hash) {
-        case "turn_back":
-          this.turnBack()
-        break
-        case "turn":
-          this.turnCard()
-        break
-        case "hint":
-
-        break
-        case "audio":
-
-        break
-        case "learnt":
-          this.showNext(true)
-        break
-        case "repeat":
-          this.showNext()
-        break
-      }
-    }
-
-
-    turnCard() {
-      this.showCue(!this.cueIsRussian)
-      this.playCue(!this.cueIsRussian)
-
-      this.buttons.classList.remove("stimulus")
-      this.buttons.classList.add("response")
-    }
-
-
-    turnBack() {
-      this.showCue(this.cueIsRussian)
-      this.playCue(this.cueIsRussian)
-
-      this.buttons.classList.remove("response")
-      this.buttons.classList.add("stimulus")
-    }
-
-
-    showNext(dontRepeat) {
-      if (this.card) {
-        if (!dontRepeat) {
-          this.repeat(this.card)
-        } else {
-          this.showProgress()
+          break
+          case "learnt":
+            this.showNext(true)
+          break
+          case "repeat":
+            this.showNext()
+          break
         }
       }
 
-      this.card = this.cards.shift()
-      if (!this.card) {
-        // All the cards have been leart
-        return this.finish()
+
+      turnCard() {
+        this.frame.classList.add("response")
+        this.buttons.classList.remove("stimulus")
+        this.buttons.classList.add("response")
+        this.playCue(!this.cueIsRussian)
       }
 
-      this.turnBack()
-    }
 
-
-    showProgress() {
-      let done = this.total - this.cards.length
-      let ratio = done / this.total * 100
-      this.progress.style = `width:${ratio}%`
-    }
-
-
-    showCue(isRussian) {
-      let text = isRussian
-               ? this.card.ru
-               : this.card.en
-      text = text.replace(" f ", "<sup>(formal)</sup> ")
-      text = text.replace(" inf ", "<sup>(informal)</sup> ")
-
-      let index = text.indexOf("|")
-      if (index < 0) {
-      } else {
-        text = text.substring(0, index)
-             + "<span>" + text.substring(index + 1) + "<span>"
+      turnBack() {
+        this.frame.classList.remove("response")
+        this.buttons.classList.remove("response")
+        this.buttons.classList.add("stimulus")
+        this.playCue(this.cueIsRussian)
       }
 
-      text = "<p>" + text + "</p>"
 
-      this.text.innerHTML = text
-    }
+      showNext(dontRepeat) {
+        if (this.card) {
+          if (!dontRepeat) {
+            this.repeat(this.card)
+          } else {
+            this.showProgress()
+          }
+        }
 
+        this.card = this.cards.shift()
+        if (!this.card) {
+          // All the cards have been learnt
+          return this.finish()
+        }
 
-    playCue(isRussian) {
-      if (isRussian) {
-        this.audioButton.link(this.card.audio, "play")
-      } else {
-        this.audioButton.toggleEnabled(false)
+        this.showCue()
+
+        this.turnBack()
       }
-    }
 
 
-    finish() {
-      this.text.innerHTML = `
-        <p>Congratulations!<br>
-        You've learnt all the cards.</p>
-      `
-      this.complete = true
-      document.body.classList.add("complete")
-    }
-
-
-    repeat(card) {
-      let index = Math.random() * (this.cards.length - this.minCount)
-      if (index < this.minCount) {
-        this.cards.push(card)
-      } else {
-        this.cards.splice(index, 0, card)
+      showProgress() {
+        let done = this.total - this.cards.length
+        let ratio = done / this.total * 100
+        this.progress.style = `width:${ratio}%`
       }
-    }
+
+    // CUE // CUE // CUE // CUE // CUE // CUE // CUE // CUE // CUE //
+
+      showCue() {
+        let getHTML = (text => {
+          text = text.replace(" f ", "<sup>(formal)</sup> ")
+          text = text.replace(" inf ", "<sup>(informal)</sup> ")
+
+          let index = text.indexOf("|")
+          if (index < 0) {
+          } else {
+            text = text.substring(0, index)
+                 + "<span>" + text.substring(index + 1) + "<span>"
+          }
+
+          return "<p>" + text + "</p>"
+        })
+
+        let stimulus
+          , response 
+
+        [stimulus, response] = this.cueIsRussian
+                             ? [this.card.ru, this.card.en]
+                             : [this.card.en, this.card.ru]
+
+        this.stimulus.innerHTML = getHTML(stimulus)
+        this.response.innerHTML = getHTML(response)
+      }
+
+
+      playCue(isRussian) {
+        if (isRussian) {
+          this.audioButton.link(this.card.audio, "play")
+        } else {
+          this.audioButton.toggleEnabled(false)
+        }
+      }
+
+
+      finish() {
+        this.response.innerHTML = `
+          <p>Congratulations!<br>
+          You've learnt all the cards.</p>
+        `
+        this.complete = true
+        document.body.classList.add("complete")
+      }
+
+
+      repeat(card) {
+        let index = Math.random() * (this.cards.length - this.minCount)
+        if (index < this.minCount) {
+          this.cards.push(card)
+        } else {
+          this.cards.splice(index, 0, card)
+        }
+      }
 
 
     cards() {
@@ -245,6 +258,8 @@
         , "ru": "Меня зовут..."
         , "audio": "2.mp3"
         }
+        ]
+        let x = [ 0
       , { "en":"Excuse f me"
         , "ru": "Извините"
         , "audio": "3.mp3"
