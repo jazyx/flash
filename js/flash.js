@@ -65,9 +65,9 @@
     }
 
 
-    treatJSON(cardData) {
-      if (!cardData) {
-        return console.log("ERROR: no card data at " + this.url)
+    treatJSON(error, cardData) {
+      if (error) {
+        return console.log(`ERROR: ${{error}} at ${this.url}`)
       }
 
       this.cards = cardData

@@ -1,11 +1,11 @@
-/** json.js **
+/** ajax.js **
  *
  * 
 **/
 
 
 
-;(function jsonLoaded(global){
+;(function ajaxLoaded(global){
   "use strict"
 
 
@@ -21,7 +21,7 @@
 
 
 
-  jazyx.classes.ParseText = class ParseText {
+  class AJAX {
     constructor(url, callback) {
       this.callback = callback
 
@@ -36,7 +36,6 @@
     }
 
 
-
     treatStateChange () {
       let status = this.xobj.status
       let state = this.xobj.readyState
@@ -47,20 +46,29 @@
           // return a value but simply returns undefined in
           // asynchronous mode
           
-          let response = this.parseText(this.xobj.responseText)
-          this.callback(response)
+          this.callback(null, this.xobj.responseText)
 
         } else {
-          this.callback(null, status)
+          this.callback(status)
         }
       }
     }
+  }
 
 
 
-    parseText(result, error) {
+
+  jazyx.classes.ParseText = class ParseText {
+    constructor(url, callback) {
+      this.callback = callback
+
+      new AJAX(url, this.parseText.bind(this))
+    }
+
+
+    parseText(error, result) {
       if (error) {
-        return
+        return this.callback(error)
       }
 
       // // result is expected to be a string with a format like:
@@ -134,7 +142,35 @@
         cardArray[index] = cardData
       })
 
-      return cardArray
+      this.callback(null, cardArray)
+    }
+  }
+
+
+
+  jazyx.classes.GetJSON = class GetJSON {  
+    constructor(url, callback) {
+      this.callback = callback
+
+      new AJAX(url, this.getJSON.bind(this))
+    }
+
+
+    getJSON(error, result) {
+      let output = "UNDEFINED ERROR"
+
+      if (error) {
+        output = error
+
+      } else {
+        try {
+          output = JSON.parse(result)
+        } catch (error) {
+          output = error
+        }
+      }
+
+      this.callback(output)
     }
   }
 
