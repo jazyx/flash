@@ -1,8 +1,13 @@
 <?php
 
+  // die (__DIR__);
+  // /home/blackslate/Repos/Flash/web/flash/ php
+  // /home/blackslate/Repos/Flash/web/flash/ data/introductions/icon.png
+
   // HARDCODED : Find data/ folder
   $list = array(
-    "data"    => dirname(__DIR__) . "/data/"
+    "root"    => dirname(__DIR__)
+  , "data"    => dirname(__DIR__) . "/data/"
   , "audio"   => "audio/"
   , "phrases" => "phrases.txt"
   , "icon"    => "icon"
@@ -19,6 +24,7 @@
     $output = "[";
 
     // Create a list of directories in the data/ folder
+    $root = $list["root"];
     $data_folder = $list["data"];
     $sub_folders = scandir($data_folder);
     // Remove . and ..
@@ -54,7 +60,7 @@
 
       if ($valid) {
         // All expected items exist (but they may not be usable)
-        $icon_path = relative_path($icon_path);
+        $icon_path = relative_path($icon_path, $root);
         array_push($icon_array, $icon_path);
       }
     }
@@ -84,12 +90,18 @@
 
 
 
-  function relative_path($path) {
+  function relative_path($path, $root) {
     // HACK: consider that the web root is in a folder called "web"
     $separator = substr($path, 0, 1);
-    $array = explode($separator, $path);
-    while (array_shift($array) !== "web") {}
-    $path = implode($separator, $array);
+    $path_array = explode($separator, $path);
+    $root_array = explode($separator, $root);
+    $parent = array_shift($path_array);
+
+    while ($parent === array_shift($root_array)) {
+      $parent = array_shift($path_array);
+    }
+
+    $path = $parent ."/". implode($separator, $path_array);
   
     return $path;
   }
