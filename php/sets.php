@@ -90,6 +90,7 @@
     $array = explode($separator, $path);
     while (array_shift($array) !== "web") {}
     $path = implode($separator, $array);
+  
     return $path;
   }
 ?>

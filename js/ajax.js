@@ -157,20 +157,17 @@
 
 
     getJSON(error, result) {
-      let output = "UNDEFINED ERROR"
+      let output
 
-      if (error) {
-        output = error
-
-      } else {
+      if (!error) {
         try {
           output = JSON.parse(result)
-        } catch (error) {
-          output = error
+        } catch (caughtError) {
+          error = "JSON.parse — " + caughtError
         }
       }
 
-      this.callback(output)
+      this.callback(error, output)
     }
   }
 

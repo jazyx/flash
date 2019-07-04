@@ -62,7 +62,7 @@ div.buttons {
 
 div.buttons img{
   width: 18vh;
-  max-width: 25vw;
+  max-width: 20vw;
 }
 
 div.buttons div{
@@ -170,6 +170,28 @@ div.done {
   transform: rotateY(-180deg);
 }
 
+
+#selector ul {
+  font-size: 6vmin;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#selector li {
+  height: 20vmin;
+}
+
+#selector a {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+#selector img {
+  height: 100%;
+  margin: 0 3vmin 0 0;
+}
 
 
 @media (min-aspect-ratio: 1/1) {

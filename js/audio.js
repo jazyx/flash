@@ -26,7 +26,7 @@
 
   jazyx.classes.AudioPlayer = class AudioPlayer {
     constructor (folder) {
-      this.folder = folder 
+      this.folder = "" 
       
       let audio = this.audio = new Audio()
       audio.onerror          = this.audioError.bind(this)
@@ -36,6 +36,11 @@
       this.playing = false //// HOW IS THIS USED? ////
 
       this.callback = null
+    }
+
+
+    setFolder(folder) {
+      this.folder = folder
     }
 
 
@@ -209,7 +214,7 @@
  
 
   jazyx.classes.AudioButton = class AudioButton {
-    constructor(player, button, folder) {
+    constructor(player, button) {
       this.player = player
       this.button = button
       this.initialize()
@@ -219,6 +224,11 @@
     initialize() {
       this.player.setCallback(this.playerCallback.bind(this))
       this.button.setCallback(this.buttonClicked.bind(this))
+    }
+
+
+    setFolder(folderPath) {
+      this.player.setFolder(folderPath)
     }
 
 
