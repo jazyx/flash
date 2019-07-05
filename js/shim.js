@@ -10,3 +10,11 @@ String.prototype.hashCode = function() {
   }
   return hash;
 }
+
+
+
+String.prototype.toCamelCase = function() {
+  return this.replace(/-([a-z])/g, function(match, capture) {
+    return capture.toUpperCase()
+  })
+}

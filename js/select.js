@@ -41,7 +41,8 @@
         let folder = path.join("/") + "/"
         let name = path.pop()
 
-        name = name.replace(/Q$/, "?").toLowerCase().replace(/_/g, " ")
+        // name = name.replace(/Q$/, "?").toLowerCase().replace(/_/g, " ")
+        name = name.replace(/^\d+-/, "").replace(/Q$/, "?").replace(/_/g, " ")
         name = name[0].toUpperCase() + name.substring(1)
 
         let hash = "#" + iconURL.hashCode() // e.g. "#-566766435"
@@ -73,7 +74,8 @@
         li.innerHTML = `
         <a class="action cardset" href="#">
           <img src="${cardData.icon}">
-          <span>${cardData.name}</span>
+          <span class="title">${cardData.name}</span>
+          <span class="percent">100%</span>
         </a>
         `
         ul.appendChild(li)
@@ -92,6 +94,8 @@
       event.preventDefault()
 
       let target = event.target
+      let showStats = (target.classList.contains("percent"))
+
       while (target && target.tagName !== "LI") {
         target = target.parentNode
       }
@@ -101,8 +105,8 @@
       }
 
       let cardSetData = this.cardSets[target.id]
-      
-      this.callback(cardSetData)
+
+      this.callback(cardSetData, showStats)
     }
   }
 

@@ -19,7 +19,8 @@
     php:      "php/sets.php"
   , phrases:  "phrases.txt"
   , audio:    "audio/"
-  , selector: "[href='#audio']"
+  , audioButton: "[href='#audio']"
+  , stats:    "#stats"
   }
   /// HARD-CODED >>>
 
@@ -30,6 +31,7 @@
       this.classes = classes
       // ParseText   *
       // GetJSON     *
+      // Select      *
       // AudioPlayer
       // PlayButton
       // AudioButton
@@ -60,13 +62,14 @@
       this.setupHTMLObjects()
 
       let player = new this.classes.AudioPlayer()
-      let button = new this.classes.PlayButton()
+      let button = new this.classes.PlayButton(this.data.audioButton)
       this.audioButton = new this.classes.AudioButton(player, button)
 
       this.getCardSetJSON()
-
       this.jsonDone = false
       this.timeOut = setTimeout(this.hideSplash.bind(this), delay)
+
+      this.stats = new this.classes.Stats(this.data.stats)
     }
 
 
@@ -125,7 +128,8 @@
     }
 
 
-    selectCardSet(cardSetData) {
+    selectCardSet(cardSetData, showStats) {
+      this.showStats = showStats
       this.cardSetData = cardSetData
       // { name:    "Introductions"
       // , phrases: "data/introductions/phrases.text"
@@ -144,6 +148,13 @@
         return console.log(`ERROR: ${{error}} at ${this.url}`)
       }
 
+      let showStats = this.showStats
+      this.showStats = false
+
+      if (showStats) {
+        return this.showStatPage(cardData)
+      }
+
       this.cards = cardData
       this.total = cardData.length
       this.card = 0
@@ -152,6 +163,12 @@
 
       this.showItem("card", this.sections)
       this.showNext()
+    }
+
+
+    showStatPage(cardData) {
+      this.stats.show(cardData)
+      this.showItem("stats", this.sections)
     }
 
 

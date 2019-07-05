@@ -1,0 +1,249 @@
+01  Как вас зовут?
+en  What is your f name?
+fr  Quel est votre nom?
+
+02	Меня зовут...
+en	My name is...
+fr  Je m'appelle...
+
+03	Извините
+en	Excuse f me
+fr  Pardonnez-moi !
+
+04	Как тебя зовут?
+en	What is your inf name?
+fr  Comment t'appelles-tu ?
+
+05	У меня есть...
+en	I have...
+fr  J'ai
+
+06	Извини
+en	Excuse inf me
+fr  Pardon !
+
+07	У вас есть...
+en	You f have...
+fr  Vous avez...
+
+08	У тебя есть...
+en	You inf have...
+fr  Tu as...
+
+09	У тебя есть деньги
+en	You inf have money
+fr  Tu as de l'argent
+
+10	У меня есть работа
+en	I have a job
+fr  J'ai un travail
+
+11	говорить
+en	to speak
+
+12	У вас есть дети?
+en	Do you inf have any children?
+
+13	работать
+en	to work 
+
+14	Я немного говорю по-русски
+en	I speak Russian a little bit
+
+15	жить
+en	to live
+
+16	Я работаю в Москве.
+en	I work in Moscow
+
+17	обедать
+en	to have lunch
+
+18	Я живу в России
+en	I live in Russia
+
+19	вставать
+en	to get up
+
+20	Я обедаю в час
+en	I have lunch at one o'clock
+
+21	Я встаю в шесть утра
+en	I get up at six in the morning
+
+22	завтракать
+en	to have breakfast
+
+23	пить
+en	to drink
+
+24	Я завтракаю дома
+en	I have breakfast at home
+
+25	Я говорю с коллегами по-английски
+en	I speak with colleagues in English
+
+26	Я люблю пить кофе на работе
+en	I like to drink coffee at work 
+
+27	Я читаю газету
+en	I am reading a newspaper
+
+28	читать
+en	to read
+
+29	Я пишу письмо
+en	I am writing a letter
+
+30	писать
+en	to write
+
+31	Я обедаю в кафе
+en	I have lunch at a cafe
+
+32	обедать
+en	to have lunch
+
+33	играть в футбол
+en	to play football
+
+34	играть
+en	to play 
+
+35	Сегодня я ужинаю в ресторане
+en	Today I am having dinner at a restaurant
+
+36	ужинать
+en	to have dinner
+
+37	я отдыхаю
+en	I am having a rest
+
+38	отдыхать
+en	to have a rest
+
+39	Вечером я смотрю новости
+en	In the evening I watch the news
+
+40	смотреть
+en	to watch
+
+41	Я слушаю музыку в машине
+en	I listen to music in the car
+
+42	слушать
+en	to listen
+
+43	Что он делает на работе?
+en	What does he do at work?
+
+44	делать
+en	to do
+
+45	Вчера было холодно
+en	It was cold yesterday
+
+46	Я говорю по телефону с клиентами
+en	I talk with clients by phone
+
+47	Сегодня тепло
+en	It's warm today
+
+48	быть
+en	to be
+
+49	стоить
+en	to cost 
+
+50	Завтра будет жарко
+en	It will be hot tomorrow
+
+51	Во сколько?
+en	At what time?
+
+52	Сколько стоит молоко?
+en	How much does milk cost?
+
+53	Я покупаю продукты в супермаркете
+en	I buy groceries at a supermarket
+
+54	покупать
+en	to buy
+
+55	находиться
+en	to be situated|to be
+
+56	Ты будешь в Москве на следующей неделе?
+en	Will you inf be in Moscow next week?
+
+57	Что ты сейчас делаешь?
+en	What are you doing now? 
+
+58	Где находится Большой театр?
+en	Where is the Bolshoy Theatre?
+
+59	Четыре года назад я работал в русской компании
+en	Four years ago I was working for a Russian company
+
+60	Два года назад я жил в Лондоне
+en	Two years ago I was living in London
+
+61	Сегодня я ужинал в ресторане
+en	Today I had dinner in a restaurant
+
+62	Вчера я обедал в кафе
+en	Yesterday I had lunch in a cafe
+
+63	Две недели назад я был на выставке
+en	Two weeks ago I was in a museum
+
+64	Два дня назад я был в Амстердаме
+en	Two days ago I was in Amsterdam
+
+65	Я езжу на работу на машине
+en	I go to work by car
+
+66	ездить
+en	to go |(by transport, regularly, in many directions)
+
+67	Мне нравится ходить пешком
+en	I like to walk
+
+68	ходить
+en	to go |(on foot, regularly, in many directions)
+
+69	Я люблю ездить на такси
+en	I like to go by taxi
+
+70	Каждую неделю я хожу в театр
+en	Every week I go to the theatre
+
+71	я могу
+en	I can
+
+72	я должен
+en	I must
+
+73	Я могу много работать
+en	I can work a lot
+
+74	Я должен работать
+en	I must work
+
+75	Через месяц я буду работать в Москве
+en	In a month's time I will be working  in Moscow
+
+76	Через год я буду жить в Италии
+en	In a year's time I will be living in Italy 
+
+77	ехать
+en	to go|(by transport, not regularly, in one direction)
+
+78	идти
+en	to go|(on foot, not regularly, in one direction)
+
+79	Завтра я еду на работу на машине
+en	Tomorrow I will go at work by car
+
+80	Сегодня я иду в театр
+en	Today I am going to the theatre

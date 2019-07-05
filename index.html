@@ -23,7 +23,22 @@
     </section>
 
     <section id="selector">
+    </section>
 
+    <section id="stats">
+      <div class="language">
+        <input type="radio" name="language" id="ru" checked>
+        <label for="ru">Русский</label>
+        <input type="radio" name="language" id="vo">
+        <label for="vo">English</label>
+      </div>
+      <ul></ul>
+      <div class="actions">
+        <a href="#select-all" class="action" id="select-all"></a>
+        <a href="#deselect-all" class="action" id="deselect-all"></a>
+        <a href="#revert" class="action" id="revert"></a>
+        <a href="#close-stats" class="action" id="close"></a>
+      </div>
     </section>
 
     <section id="card">
@@ -43,10 +58,6 @@
       </div>
 
       <div class="buttons stimulus">
-          <a href="#select" class="action">
-            <img src="img/select.svg">
-          </a>
-
           <a href="#hint" class="action stimulus">
             <img src="img/hint.svg">
           </a>
@@ -54,7 +65,7 @@
             <img src="img/turn_back.svg">
           </a>
 
-          <a href="#audio">
+          <a href="#audio" class="action">
             <img src="img/audio.svg">
           </a>
 
@@ -77,11 +88,16 @@
     <div class="settings">
       <!-- TODO -->
     </div>
+
+    <a href="#select" class="action" id="showSelection">
+      <img src="img/select.svg">
+    </a>
   </main>
 
 <script src="js/shim.js"></script>
 <script src="js/ajax.js"></script>
 <script src="js/select.js"></script>
+<script src="js/stats.js"></script>
 <script src="js/audio.js"></script>
 <script src="js/flash.js"></script>
 </body>

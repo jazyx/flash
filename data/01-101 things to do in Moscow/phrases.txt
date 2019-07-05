@@ -1,0 +1,11 @@
+01  Как попасть до Красной площади?
+en  How do I get to Red Square?
+
+02	Где ближайшая станция метро?
+en  Where is the nearest metro station?
+
+03	Где я могу купить билет?
+en	Where can I buy a ticket?
+
+04  Сколько дорог человеку пройти чтоб стать человеком он мог?
+en  How many roads must a man walk down before you call him a man?

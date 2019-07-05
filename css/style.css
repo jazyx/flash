@@ -1,5 +1,5 @@
 body { 
-  background-color: #000;
+  background-color: #333;
 }
 
 section#splash.active {
@@ -62,29 +62,18 @@ div.buttons {
 
 div.buttons img{
   width: 18vh;
-  max-width: 20vw;
+  max-width: 25vw;
 }
-
-div.buttons div{
-  width: 100%;
-  display: none;
-  justify-content: space-between;
-}
-
-div.buttons div.active{
-  display: flex;
-}
-
 
 div.stimulus a.response,
 div.response a.stimulus {
   display: none;
 }
 
-div [href='#audio'] img {
+div.buttons a.action img {
   box-sizing: border-box;
   border: 1vmin outset #999;
-  border-radius: 5vmin;
+  border-radius: 50vmin;
 }
 
 div [href='#audio'].down img {
@@ -171,10 +160,19 @@ div.done {
 }
 
 
+#showSelection {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 10vmin;
+  z-index: 99;
+}
+
 #selector ul {
   font-size: 6vmin;
   height: 100%;
   overflow-y: auto;
+  list-style: none;
 }
 
 #selector li {
@@ -191,6 +189,90 @@ div.done {
 #selector img {
   height: 100%;
   margin: 0 3vmin 0 0;
+}
+
+#selector a {
+  color: #fff;
+  text-decoration: none;
+}
+
+#selector span.title {
+  width: calc(100% - 23vmin - 2.5em);
+}
+
+#selector span.percent {
+  position: absolute;
+  right: 0;
+  width: 2.5em;
+  text-align: right;
+}
+
+
+#stats {
+  color: white;
+  font-size: 5vw;
+}
+
+
+#stats div.language {
+  display: flex;
+  justify-content: space-around;
+}
+
+#stats div.language input {
+  display: none;
+}
+
+
+#stats div.language label {
+  background: #333;
+  box-sizing: border-box;
+  border: 0.5vmin outset #555;
+  border-radius: 1vmin;
+  height: 1.7em;
+  width: 33vw;
+  text-align: center;
+  line-height: 1.4em;
+  color: #fff;
+  text-decoration: none;
+}
+
+#stats div.language input:checked + label {
+  background: #666;
+  border-style: inset;
+  border-color: #888;
+}
+
+
+#stats span.vo,
+#stats.vo span.ru {
+  display: none;
+}
+
+
+#stats.vo span.vo {
+  display: inline-block;
+}
+
+
+#stats ul { 
+  list-style: none;
+  overflow-y: auto;
+  padding: 0 1em;
+  height: calc(100% - 20vh);
+  overflow-y: auto;
+  margin: 2vh 0;
+}
+
+
+#stats li {
+  display: flex;
+  align-items: center;
+  padding: 0.25em 0;
+}
+
+#stats input {
+  margin: 0 3vw 0 0;
 }
 
 
