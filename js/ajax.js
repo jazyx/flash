@@ -106,12 +106,10 @@
       // Regex to break card data into languages
       let dataRegex = /\n+/
 
-
-
       let cardArray = result.split(phraseRegex)
 
       cardArray.forEach((cardString, index) => {
-        let cardData = {}
+        let cardData = { index: index }
         let languageChunks = cardString.split(dataRegex)
                                      .filter(chunk => chunk !== "")
 

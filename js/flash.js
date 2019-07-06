@@ -201,7 +201,7 @@
       cardData.forEach(cardArray => {
         let keys = Object.keys(cardArray)
         keys.forEach(key => {
-          if (key === "audio") {
+          if (key === "audio" || key === "index") {
             return
           }
 
@@ -224,31 +224,18 @@
 
 
     showCards(cardData) {
-      this.cards = cardData
+      // Remove known cards, and create a new array, disconnected
+      // from the array in this.storage.data
+      this.cards = cardData.filter((card => !card.known))
+
       this.total = cardData.length
       this.card = 0
 
       this.audioButton.setFolder(this.cardSetData.audio)
 
-      this.removeKnownCards(cardData)
 
       this.showItem("card", this.sections)
       this.showNext()
-    }
-
-
-    removeKnownCards(cardData) {
-      let knownCards = cardData.known
-      if (!knownCards) {
-        knownCards = cardData.known = []
-      }
-
-      cardData.forEach((card, index) => {
-        if (card.known) {
-          cardData.splice(index, 1)
-          knownCards.push(card)
-        }
-      })
     }
 
 
@@ -366,7 +353,7 @@
         if (!dontRepeat) {
           this.repeat(this.card)
         } else {
-          this.showProgress()
+          this.rememberCard(this.card)
         }
       }
 
@@ -379,6 +366,18 @@
       this.showCue()
 
       this.turnBack()
+    }
+
+
+    rememberCard(card) {
+      let setName = this.cardSetData.name
+      let index = this.card.index
+      // Mark the card as known in localStorage. There is no need to
+      // mark it as known in this.cards, since it no longer appears 
+      // there.
+
+      this.storage.rememberCard(setName, index, true) 
+      this.showProgress()
     }
 
 

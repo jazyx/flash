@@ -97,7 +97,7 @@
 
 
     applyAction(event) {
-      target = event.target
+      let target = event.target
       if (target.tagName !== "A") {
         return
       }

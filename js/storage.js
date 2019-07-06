@@ -43,9 +43,15 @@
 
 
     getCardSet(setName) {
-      // Return a clone, so that the main app can remove items
+      // Return a clone, so that the main app can remove items.
+      // This probably doesn't matter since Flash.showCards()
+      // uses .filter() to create a new array.
+      
       let cardSetData = this.data[setName]
-      cardSetData = JSON.parse(JSON.stringify(cardSetData))
+
+      if (cardSetData) {
+        cardSetData = JSON.parse(JSON.stringify(cardSetData))
+      }
 
       return cardSetData
     }
