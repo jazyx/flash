@@ -21,7 +21,7 @@
 
 
 
-  class AJAX {
+    let AJAX = jazyx.classes.AJAX = class AJAX {
     constructor(url, callback) {
       this.callback = callback
 

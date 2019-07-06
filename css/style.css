@@ -12,7 +12,7 @@ section#splash img {
 }
 
 sup {
-  font-size: 4vw;
+  font-size: 0.5em;
 }
 
 section#card > div {
@@ -33,12 +33,15 @@ p {
   opacity: 0.75;
 }
 
-div.text span {
+div.card span.precision {
   display: block;
-  font-size: 6vmin;
-  color: #666;
 }
 
+span.precision {
+  font-size: 0.6667em;
+  color: #666;
+  margin: 0 0.5em;
+}
 
 body.complete {
   color: darkgoldenrod;
@@ -210,31 +213,32 @@ div.done {
 
 #stats {
   color: white;
-  font-size: 5vw;
+  font-size: 5vmin;
 }
 
 
 #stats div.language {
   display: flex;
   justify-content: space-around;
+  height: 10vh;
 }
 
 #stats div.language input {
   display: none;
 }
 
-
 #stats div.language label {
   background: #333;
   box-sizing: border-box;
   border: 0.5vmin outset #555;
   border-radius: 1vmin;
-  height: 1.7em;
-  width: 33vw;
-  text-align: center;
-  line-height: 1.4em;
+  height: 10vh;
+  width: 50vw;
   color: #fff;
   text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 #stats div.language input:checked + label {
@@ -261,20 +265,69 @@ div.done {
   padding: 0 1em;
   height: calc(100% - 20vh);
   overflow-y: auto;
-  margin: 2vh 0;
+  margin: 0;
 }
 
-
-#stats li {
+#stats label {
   display: flex;
   align-items: center;
   padding: 0.25em 0;
 }
 
 #stats input {
-  margin: 0 3vw 0 0;
+  display: none;
 }
 
+#stats label div {
+  width: 5vmin;
+  height: 5vmin;
+  background-color: #fdd;
+  background-image: url("../img/cloud.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
+  flex-shrink: 0;
+  margin: 0 0.5em 0 0;
+  padding: 0.2em;
+  border: 0.1em outset #dbb;
+  border-radius: 0.3em;
+}
+
+#stats input:checked + label div {
+  background: #dfd;
+  background-image: url("../img/brain.svg");
+  border-color: #bdb;
+  border-style: inset;
+}
+
+#stats .actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+#stats .actions a {
+  height: 9vh;
+  background: #333;
+  width: 24%;
+  display: inline-block;
+  border: 1vmin inset #444;
+  border-radius: 3vmin;
+  box-sizing: border-box;
+  color: #fff;
+  text-align: center;
+  font-size: 4vw;
+  text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+a#close {
+  font-size: 1.5em!important;
+}
 
 @media (min-aspect-ratio: 1/1) {
   section.splash img {

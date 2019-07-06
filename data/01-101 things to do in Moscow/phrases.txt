@@ -1,3 +1,6 @@
+05  ходить
+to go | (on foot, regularly, in many directions)
+
 01  Как попасть до Красной площади?
 en  How do I get to Red Square?
 
@@ -5,7 +8,7 @@ en  How do I get to Red Square?
 en  Where is the nearest metro station?
 
 03	Где я могу купить билет?
-en	Where can I buy a ticket?
+en	Where can I buy a ticket? | (for an event)
 
 04  Сколько дорог человеку пройти чтоб стать человеком он мог?
 en  How many roads must a man walk down before you call him a man?

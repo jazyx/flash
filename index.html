@@ -32,12 +32,16 @@
         <input type="radio" name="language" id="vo">
         <label for="vo">English</label>
       </div>
-      <ul></ul>
+
+      <ul>
+        <!-- Complete list of expressions goes here -->
+      </ul>
+
       <div class="actions">
-        <a href="#select-all" class="action" id="select-all"></a>
-        <a href="#deselect-all" class="action" id="deselect-all"></a>
-        <a href="#revert" class="action" id="revert"></a>
-        <a href="#close-stats" class="action" id="close"></a>
+        <a href="#select-all" class="action" id="select-all">Select all</a>
+        <a href="#deselect-all" class="action" id="deselect-all">Deselect all</a>
+        <a href="#revert" class="action" id="revert">Cancel</a>
+        <a href="#close-stats" class="action" id="close">OK</a>
       </div>
     </section>
 
@@ -95,6 +99,8 @@
   </main>
 
 <script src="js/shim.js"></script>
+<script src="js/user.js"></script>
+<script src="js/storage.js"></script>
 <script src="js/ajax.js"></script>
 <script src="js/select.js"></script>
 <script src="js/stats.js"></script>

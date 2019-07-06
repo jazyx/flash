@@ -29,9 +29,11 @@
   class Flash {
     constructor(classes, data) {
       this.classes = classes
-      // ParseText   *
-      // GetJSON     *
-      // Select      *
+      // User
+      // Storage
+      // ParseText
+      // GetJSON
+      // Select
       // AudioPlayer
       // PlayButton
       // AudioButton
@@ -61,6 +63,9 @@
 
       this.setupHTMLObjects()
 
+      // TODO: Deal with registered users
+      this.storage = new this.classes.Storage("user_name_goes_here")
+
       let player = new this.classes.AudioPlayer()
       let button = new this.classes.PlayButton(this.data.audioButton)
       this.audioButton = new this.classes.AudioButton(player, button)
@@ -69,7 +74,8 @@
       this.jsonDone = false
       this.timeOut = setTimeout(this.hideSplash.bind(this), delay)
 
-      this.stats = new this.classes.Stats(this.data.stats)
+      let callback = this.updateStats.bind(this)
+      this.stats = new this.classes.Stats(this.data.stats, callback)
     }
 
 
@@ -109,9 +115,14 @@
 
     getCardSetIcons(error, iconURLArray) {
       if (error) {
-        return console.log(
-          `Ajax call to ${this.data.php} returned error\n${error}`
-        )
+        // We might be offline. Use stored cardsets as fallback.
+        let iconURLArray = getCardSetIconsFromLocalStorage()
+
+        if (!iconURLArray) {
+          return console.log(
+            `Ajax call to ${this.data.php} returned error\n${error}`
+          )
+        }
       }
 
       let section = this.sections.selector
@@ -128,6 +139,16 @@
     }
 
 
+    getCardSetIconsFromLocalStorage() {
+      let iconURLArray = this.storage.getCardSetIcons()
+      if (iconURLArray.length) {
+        iconURLArray = false
+      }
+
+      return iconURLArray
+    }
+
+
     selectCardSet(cardSetData, showStats) {
       this.showStats = showStats
       this.cardSetData = cardSetData
@@ -138,6 +159,11 @@
       // , icon:    "data/introductions/icon.svg"
       // }
       
+      let cardSet = this.storage.getCardSet(cardSetData.name)
+      if (cardSet) {
+        return this.display(cardSet)
+      }
+
       let url = cardSetData.phrases
       new this.classes.ParseText(url, this.treatJSON.bind(this))
     }
@@ -148,21 +174,81 @@
         return console.log(`ERROR: ${{error}} at ${this.url}`)
       }
 
+      this.convertToHTML(cardData)
+      cardData.data = this.cardSetData
+      this.storage.addCardSet(cardData)
+
+      this.display(cardData)
+    }
+
+
+    convertToHTML(cardData) {
+      let getHTML = (text) => {
+        text = text.replace(" f ", "<sup>(formal)</sup> ")
+        text = text.replace(" inf ", "<sup>(informal)</sup> ")
+
+        let index = text.indexOf("|")
+        if (index < 0) {
+        } else {
+          let precision = text.substring(index + 1).trim()
+          text = text.substring(0, index).trim()
+               + `<span class="precision">${precision}<span>`
+        }
+
+        return "<p>" + text + "</p>"
+      }
+
+      cardData.forEach(cardArray => {
+        let keys = Object.keys(cardArray)
+        keys.forEach(key => {
+          if (key === "audio") {
+            return
+          }
+
+          cardArray[key] = getHTML(cardArray[key])
+        })
+      })
+    }
+
+
+    display(cardData) {
       let showStats = this.showStats
       this.showStats = false
 
       if (showStats) {
-        return this.showStatPage(cardData)
+        this.showStatPage(cardData)
+      } else {
+        this.showCards(cardData)
       }
+    }
 
+
+    showCards(cardData) {
       this.cards = cardData
       this.total = cardData.length
       this.card = 0
 
       this.audioButton.setFolder(this.cardSetData.audio)
 
+      this.removeKnownCards(cardData)
+
       this.showItem("card", this.sections)
       this.showNext()
+    }
+
+
+    removeKnownCards(cardData) {
+      let knownCards = cardData.known
+      if (!knownCards) {
+        knownCards = cardData.known = []
+      }
+
+      cardData.forEach((card, index) => {
+        if (card.known) {
+          cardData.splice(index, 1)
+          knownCards.push(card)
+        }
+      })
     }
 
 
@@ -302,23 +388,22 @@
       this.progress.style = `width:${ratio}%`
     }
 
+
+    updateStats(action, index, state) {
+      let setName = this.cardSetData.name
+
+      console.log(setName, action, index, state)
+
+      switch (action) {
+        case "rememberCard":
+          this.storage.rememberCard(setName, index, state)
+      }
+    }
+
+
     // CUE // CUE // CUE // CUE // CUE // CUE // CUE // CUE // CUE //
 
     showCue() {
-      let getHTML = (text => {
-        text = text.replace(" f ", "<sup>(formal)</sup> ")
-        text = text.replace(" inf ", "<sup>(informal)</sup> ")
-
-        let index = text.indexOf("|")
-        if (index < 0) {
-        } else {
-          text = text.substring(0, index)
-               + "<span>" + text.substring(index + 1) + "<span>"
-        }
-
-        return "<p>" + text + "</p>"
-      })
-
       let stimulus
         , response 
 
@@ -326,8 +411,8 @@
                            ? [this.card.ru, this.card[this.cueCode]]
                            : [this.card[this.cueCode], this.card.ru]
 
-      this.stimulus.innerHTML = getHTML(stimulus)
-      this.response.innerHTML = getHTML(response)
+      this.stimulus.innerHTML = stimulus
+      this.response.innerHTML = response
     }
 
 
