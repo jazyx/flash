@@ -22,71 +22,77 @@
 
 
   jazyx.classes.Select = class Select {
-    constructor(section, data, urlArray, callback) {
-      this.section = section
+    constructor(section, data, cardSetsArray, callback) {
+      this.ul = section.querySelector("ul")
       this.data = data
-      this.cardSets = this.getCardSets(urlArray)
+      // { ...
+      // , phrases:  "phrases.txt"
+      // , audio:    "audio/"
+      // , ... }
+      
+      this.cardSets = cardSetsArray
       this.callback = callback
+
+      this.ul.onclick = this.selectCardSet.bind(this)
+      this.hashLUT = {}
 
       this.injectHTML()
     }
 
 
-    getCardSets(urlArray) {
-      let cardSets = {}
+    injectHTML() {
+      while (this.ul.firstChild) {
+        this.ul.firstChild.remove();
+      }
 
-      urlArray.forEach(iconURL => {
-        let path = iconURL.split("/")
-        path.pop() // split off icon filename
-        let folder = path.join("/") + "/"
-        let name = path.pop()
 
-        // name = name.replace(/Q$/, "?").toLowerCase().replace(/_/g, " ")
-        name = name.replace(/^\d+-/, "").replace(/Q$/, "?").replace(/_/g, " ")
-        name = name[0].toUpperCase() + name.substring(1)
+      this.cardSets.forEach(cardSet => {
+        let info = cardSet.info
+        // let ratios = cardSet.getRatios()
 
-        let hash = "#" + iconURL.hashCode() // e.g. "#-566766435"
+        let li = document.createElement("li")
+        li.id = info.hash
 
-        cardSets[hash] = {
-          name: name
-        , hash: hash
-        , icon: iconURL
-        , audio: folder + this.data.audio
-        , phrases: folder + this.data.phrases
-        }
+        this.hashLUT[info.hash] = cardSet
 
+        // li.innerHTML = `
+        // <a class="action cardset" href="#">
+        //   <div class="progress" style="width:${ratios.percent}"></div>
+        //   <img src="${info.icon}">
+        //   <div class="text">
+        //     <span class="title">
+        //       ${info.name}</span>
+        //     <span class="percent">${ratios.rounded}</span>
+        //   </div>
+        // </a>
+        // `
+        li.innerHTML = `
+        <a class="action cardset" href="#">
+          <div class="progress"></div>
+          <img src="${info.icon}">
+          <div class="text">
+            <span class="title">
+              ${info.name}</span>
+            <span class="percent"></span>
+          </div>
+        </a>
+        `
+
+        this.ul.appendChild(li)
       })
-      
-      return cardSets
     }
 
 
-    injectHTML() {
-      let ul = document.createElement("ul")
-      let keys = Object.keys(this.cardSets)
+    refresh() {
+      this.cardSets.forEach(cardSet => {
+        let li = document.getElementById(cardSet.info.hash)
+        let progress = li.querySelector("div.progress")
+        let percent = li.querySelector("span.percent")
+        let ratios = cardSet.getRatios()
 
-      keys.forEach(key => {
-        let cardData = this.cardSets[key]
-
-        let li = document.createElement("li")
-        li.id = cardData.hash
-
-        li.innerHTML = `
-        <a class="action cardset" href="#">
-          <img src="${cardData.icon}">
-          <span class="title">${cardData.name}</span>
-          <span class="percent">100%</span>
-        </a>
-        `
-        ul.appendChild(li)
+        progress.style = "width:" + ratios.percent
+        percent.innerText = ratios.rounded
       })
-
-      while (this.section.firstChild) {
-        this.section.firstChild.remove();
-      }
-
-      this.section.appendChild(ul)
-      ul.onclick = this.selectCardSet.bind(this)
     }
 
 
@@ -94,7 +100,9 @@
       event.preventDefault()
 
       let target = event.target
-      let showStats = (target.classList.contains("percent"))
+      let action = (target.classList.contains("percent"))
+                    ? "showList"
+                    : "showCards"
 
       while (target && target.tagName !== "LI") {
         target = target.parentNode
@@ -104,9 +112,20 @@
         return
       }
 
-      let cardSetData = this.cardSets[target.id]
+      let cardSet = this.hashLUT[target.id]
+      // console.log("selectCardSet", cardSet)
 
-      this.callback(cardSetData, showStats)
+      this.callback(action, cardSet)
+    }
+
+
+    updatePercentage(cardSetData) {
+      let ratios = this.getRatios(cardSetData)
+      let li = document.getElementById(cardSetData.hash)
+      let div = li.querySelector("div.progress")
+      let percent = li.querySelector("span.percent")
+      div.style.width = ratios.percent
+      percent.innerText = ratios.rounded
     }
   }
 

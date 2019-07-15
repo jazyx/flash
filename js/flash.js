@@ -20,7 +20,6 @@
   , phrases:  "phrases.txt"
   , audio:    "audio/"
   , audioButton: "[href='#audio']"
-  , stats:    "#stats"
   }
   /// HARD-CODED >>>
 
@@ -31,7 +30,7 @@
       this.classes = classes
       // User
       // Storage
-      // ParseText
+      // Ajax
       // GetJSON
       // Select
       // AudioPlayer
@@ -40,16 +39,18 @@
       // (Flash)
 
       this.data = data
-      // phrases:  "phrases.text"
-      // audio:    "audio/"
-      // selector: "[href='#audio']"
+      // { php:      "php/sets.php"
+      // , phrases:  "phrases.txt"
+      // , audio:    "audio/"
+      // , audioButton: "[href='#audio']"
+      // , stats:    "#stats" }
 
       this.initialize()
       // creates the properties:
       // 
       // this.sections = {...}
       // this.text = div element
-      // this.cards = [...]
+      // this.cardSet = CardSet object
       // this.card = 0
       // this.minCount = 10
       // this.cueCode = "en"
@@ -64,7 +65,11 @@
       this.setupHTMLObjects()
 
       // TODO: Deal with registered users
-      this.storage = new this.classes.Storage("user_name_goes_here")
+      this.storage = new this.classes.Storage()
+      this.users = new this.classes.Users(this.storage)
+      this.user = this.users.getCurrentUser()
+
+      // console.log(this.user)
 
       let player = new this.classes.AudioPlayer()
       let button = new this.classes.PlayButton(this.data.audioButton)
@@ -75,7 +80,7 @@
       this.timeOut = setTimeout(this.hideSplash.bind(this), delay)
 
       let callback = this.updateStats.bind(this)
-      this.stats = new this.classes.Stats(this.data.stats, callback)
+      this.stats = new this.classes.ListView("#stats", callback)
     }
 
 
@@ -105,32 +110,73 @@
     }
 
 
-
     getCardSetJSON() {
       let callback = this.getCardSetIcons.bind(this)
-      let url = this.data.php
+      let parameters = ""
+
+      parameters += "&user=" + encodeURIComponent(this.user.name)
+      parameters = "?" + parameters.substring(1)
+
+      let url = this.data.php + parameters
       new this.classes.GetJSON(url, callback)
     }
 
 
-    getCardSetIcons(error, iconURLArray) {
+    /**
+     * Gets the card set icons.
+     *
+     * @param   {<type>}  error    null | string "JSON.parse — ..."
+     * @param   {<type>}  dataMap  undefined (if error) | {
+     *                               user: { name: <string> }
+     *                             , sets: [ {
+       *                                 url:        <string>
+       *                               , timestamp:  <integer>
+       *                               , customKeys: []
+       *                               , svgString:  <string | missing>
+     *                               }
+     *                               , ...
+     *                               ]
+     *                             }
+     *                               , ...
+     *                               ]
+     *                             }
+     * @return  {<type>}  The card set icons.
+     */
+    getCardSetIcons(error, dataMap) {
+      let cardSetData
+      let username
+
       if (error) {
         // We might be offline. Use stored cardsets as fallback.
-        let iconURLArray = getCardSetIconsFromLocalStorage()
+        // console.log("local")
+        username = this.user.name
+        cardSetData = this.getCardSetsFromLocalStorage(username)
 
-        if (!iconURLArray) {
+        if (!cardSetData) {
           return console.log(
             `Ajax call to ${this.data.php} returned error\n${error}`
           )
         }
+
+      } else {
+        // console.log("remote")
+        username = dataMap.user.name
+        cardSetData = this.createCardSets(dataMap.sets, username)
       }
 
+      // console.log(cardSetData)
+      // console.log("***")
+
+      cardSetData.sort((cardSet1, cardSet2) => {
+        return (cardSet1.icon > cardSet2.icon) * 2 - 1
+      })
+
       let section = this.sections.selector
-      let callback = this.selectCardSet.bind(this)
+      let callback = this.callbackFromSelector.bind(this)
       this.selector = new this.classes.Select(
         section
       , this.data
-      , iconURLArray
+      , cardSetData
       , callback
       )
 
@@ -139,33 +185,116 @@
     }
 
 
-    getCardSetIconsFromLocalStorage() {
-      let iconURLArray = this.storage.getCardSetIcons()
-      if (iconURLArray.length) {
-        iconURLArray = false
+    getCardSetsFromLocalStorage(username) {
+      let localCardSetsArray = this.storage.getCardSets(username)
+      let cardSetInfo
+
+      if (!localCardSetsArray.length) {
+        return false
       }
 
-      return iconURLArray
+      localCardSetsArray.forEach((cardSetInfo, index) => {
+        localCardSetsArray[index] = this.createCardSet(cardSetInfo)
+      })
+
+      return localCardSetsArray
     }
 
 
-    selectCardSet(cardSetData, showStats) {
-      this.showStats = showStats
-      this.cardSetData = cardSetData
-      // { name:    "Introductions"
-      // , phrases: "data/introductions/phrases.text"
-      // , audio:   "data/introductions/audio/"
-      // , hash:    "#361358634"
-      // , icon:    "data/introductions/icon.svg"
-      // }
-      
-      let cardSet = this.storage.getCardSet(cardSetData.name)
-      if (cardSet) {
-        return this.display(cardSet)
+    /**
+     * Called by getCardSetsFromLocalStorage
+     *
+     * @param  {<type>}  cardSets  The card sets
+     */
+    createCardSet(cardSetInfo) {
+      let CardSet = this.classes.CardSet
+      let options = {
+        zero:     0
+      // , Ajax:     this.classes.Ajax
+      , storage:   this.storage
+      , callback:  this.callbackFromCardset.bind(this)
+      , info:      cardSetInfo
+      , user:      this.user
+      // , data:     data
+      /// <<< HARD-CODED
+      , vo:        "ru"
+      , default:   "en"
+      /// HARD-CODED >>>
       }
 
-      let url = cardSetData.phrases
-      new this.classes.ParseText(url, this.treatJSON.bind(this))
+      return new CardSet(options)
+    }
+
+
+    /**
+     * Called by getCardSetIcons
+     *
+     * @param  {<type>}  cardSets  The card sets
+     */
+    createCardSets(cardSetsArray, userName) {
+      let CardSet = this.classes.CardSet
+      let options = {
+        Ajax:     this.classes.Ajax
+      , storage:  this.storage
+      , callback: this.callbackFromCardset.bind(this)
+      , data:     data
+      , user:     this.user
+      /// <<< HARD-CODED
+      , vo:       "ru"
+      , default:  "en"
+      /// HARD-CODED >>>
+      //, info: TO BE SET IN forEach LOOP
+      }
+
+      cardSetsArray.forEach((cardSetInfo, index) => {
+        options.info = cardSetInfo
+        cardSetsArray[index] = new CardSet(options)
+      })
+
+      return cardSetsArray
+    }
+
+
+    callbackFromCardset(action) {
+      let data = [...arguments]
+      data.shift() // removes the `action` argument
+
+      if (typeof this[action] === "function") {
+        this[action].apply(this, data)
+      }
+    }
+
+
+    /**
+     * { function_description }
+     *
+     * @param  {object}  cardSetData  { name:    "Set"
+     *                                , phrases: "data/set/phrases.txt"
+     *                                , audio:   "data/set/audio/"
+     *                                , hash:    <number>
+     *                                , icon:    "data/set/icon.svg"
+     *                                }
+     * @param  {string}  action       < "showStats"
+     *                                | "showCards"
+     *                                | "percentKnown"
+     *                                >
+     * @return {number | undefined}   If action is "percentKnown"
+     *                                returns a number 0.0 - 100.0
+     */
+    callbackFromSelector(action, cardSet) {
+      this.showList = (action === "showList")
+
+      this.cardSet = cardSet
+
+      switch (action) {
+        case "showCards":
+          let callback = this.showCards.bind(this)
+          cardSet.lightsUp(callback)
+        break
+
+        case "showList":
+
+      }
     }
 
 
@@ -182,64 +311,28 @@
     }
 
 
-    convertToHTML(cardData) {
-      let getHTML = (text) => {
-        text = text.replace(" f ", "<sup>(formal)</sup> ")
-        text = text.replace(" inf ", "<sup>(informal)</sup> ")
-
-        let index = text.indexOf("|")
-        if (index < 0) {
-        } else {
-          let precision = text.substring(index + 1).trim()
-          text = text.substring(0, index).trim()
-               + `<span class="precision">${precision}<span>`
-        }
-
-        return "<p>" + text + "</p>"
-      }
-
-      cardData.forEach(cardArray => {
-        let keys = Object.keys(cardArray)
-        keys.forEach(key => {
-          if (key === "audio" || key === "index") {
-            return
-          }
-
-          cardArray[key] = getHTML(cardArray[key])
-        })
-      })
-    }
-
-
     display(cardData) {
-      let showStats = this.showStats
-      this.showStats = false
+      let showList = this.showList
+      this.showList = false
 
-      if (showStats) {
-        this.showStatPage(cardData)
+      if (showList) {
+        this.showList(cardData)
       } else {
         this.showCards(cardData)
       }
     }
 
 
-    showCards(cardData) {
-      // Remove known cards, and create a new array, disconnected
-      // from the array in this.storage.data
-      this.cards = cardData.filter((card => !card.known))
-
-      this.total = cardData.length
-      this.card = 0
-
-      this.audioButton.setFolder(this.cardSetData.audio)
-
-
+    showCards(cardSet, percent) {
+      this.cardSet = cardSet
+      this.audioButton.setFolder(cardSet.info.audio)
       this.showItem("card", this.sections)
+      this.showProgress(percent)
       this.showNext()
     }
 
 
-    showStatPage(cardData) {
+    showList(cardData) {
       this.stats.show(cardData)
       this.showItem("stats", this.sections)
     }
@@ -273,7 +366,14 @@
 
 
     showItem(id, group) {
+      switch (id) {
+        case "selector":
+          this.selector.refresh()
+        break
+      }
+
       let ids = Object.keys(group)
+
       ids.forEach(itemId => {
         let item = group[itemId]
         if (itemId === id) {
@@ -349,22 +449,13 @@
 
 
     showNext(dontRepeat) {
-      if (this.card) {
-        if (!dontRepeat) {
-          this.repeat(this.card)
-        } else {
-          this.rememberCard(this.card)
-        }
-      }
-
-      this.card = this.cards.shift()
+      this.card = this.cardSet.getNext(dontRepeat)
       if (!this.card) {
         // All the cards have been learnt
         return this.finish()
       }
 
       this.showCue()
-
       this.turnBack()
     }
 
@@ -373,7 +464,7 @@
       let setName = this.cardSetData.name
       let index = this.card.index
       // Mark the card as known in localStorage. There is no need to
-      // mark it as known in this.cards, since it no longer appears 
+      // mark it as known in this.cardSet, since it no longer appears 
       // there.
 
       this.storage.rememberCard(setName, index, true) 
@@ -381,21 +472,22 @@
     }
 
 
-    showProgress() {
-      let done = this.total - this.cards.length
-      let ratio = done / this.total * 100
-      this.progress.style = `width:${ratio}%`
+    showProgress(percent) {
+      this.progress.style = `width:${percent}%`
     }
 
 
     updateStats(action, index, state) {
+      console.log("updateStats called. Not obsolete yet?")
       let setName = this.cardSetData.name
+      this.cardSetData.known = this.percentKnown()
 
-      console.log(setName, action, index, state)
+      console.log(this.cardSetData)
 
       switch (action) {
         case "rememberCard":
           this.storage.rememberCard(setName, index, state)
+          this.selector.updatePercentage(this.cardSetData)
       }
     }
 
@@ -431,16 +523,6 @@
       `
       this.complete = true
       document.body.classList.add("complete")
-    }
-
-
-    repeat(card) {
-      let index = Math.random() * (this.cards.length - this.minCount)
-      if (index < this.minCount) {
-        this.cards.push(card)
-      } else {
-        this.cards.splice(index, 0, card)
-      }
     }
   }
 

@@ -20,7 +20,7 @@ section#card > div {
   display: flex;
 }
 
-div.text {
+section#card div.text {
   height: 80vh;
   justify-content: center;
   align-items: center;
@@ -54,7 +54,6 @@ body.complete div.done {
 body.complete div.buttons {
   opacity: 0;
 }
-
 
 div.buttons {
   position: fixed;
@@ -94,7 +93,7 @@ div [href='#audio'].disabled img {
   box-sizing: border-box;
 }
 
-div.progress {
+#card div.progress {
   position: fixed;
   top: 80vh;
   height: 2vh;
@@ -176,40 +175,47 @@ div.done {
   height: 100%;
   overflow-y: auto;
   list-style: none;
+  padding: 0;
 }
 
 #selector li {
+  position: relative;
   height: 20vmin;
 }
 
 #selector a {
   display: flex;
-  align-items: center;
   height: 100%;
-  width: 100%;
-}
-
-#selector img {
-  height: 100%;
-  margin: 0 3vmin 0 0;
-}
-
-#selector a {
   color: #fff;
   text-decoration: none;
 }
 
-#selector span.title {
-  width: calc(100% - 23vmin - 2.5em);
+#selector img {
+  height: 20vmin;
+  margin: 0 1vmin 0 0;
 }
 
-#selector span.percent {
+#selector li div.text {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: calc(100% - 22.5vmin);
+}
+
+#selector li div.progress {
   position: absolute;
-  right: 0;
-  width: 2.5em;
-  text-align: right;
+  top: 0;
+  width: 50%;
+  height: 99%;
+  background-color: #fff;
+  opacity: 0.1;
 }
 
+#selector span.title {
+  padding: 0 1vmin;
+}
 
 #stats {
   color: white;

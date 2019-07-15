@@ -1,11 +1,11 @@
-/** stats.js **
+/** listview.js **
  *
  * 
 **/
 
 
 
-;(function statsLoaded(global){
+;(function listviewLoaded(global){
   "use strict"
 
 
@@ -21,7 +21,7 @@
 
 
 
-  jazyx.classes.Stats = class Stats {
+  jazyx.classes.ListView = class ListView {
     constructor(selector, callback) {
       let section = this.section = document.querySelector(selector)
       this.callback = callback
@@ -115,7 +115,7 @@
     }
 
 
-    deelectAll() {
+    deselectAll() {
       console.log("deselectAll")
       
     }

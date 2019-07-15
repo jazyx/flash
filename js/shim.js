@@ -18,3 +18,22 @@ String.prototype.toCamelCase = function() {
     return capture.toUpperCase()
   })
 }
+
+
+
+Array.prototype.shuffle = function() {
+  let countDown = this.length
+    , randomIndex;
+
+  // While there remain elements to shuffle...
+  while (countDown) {
+    // Pick a random element near the beginning...
+    randomIndex = Math.floor(Math.random() * countDown--)
+
+    // And swap it with the current element.
+    this[countDown] = this[randomIndex]
+                    + (this[randomIndex] = this[countDown], 0)
+  }
+
+  return this // so that we can chain operations
+}

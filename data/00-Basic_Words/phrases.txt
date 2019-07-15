@@ -1,0 +1,52 @@
+01  Меня зовут...
+    My name is...
+02  Как вас зовут?
+    What is your f name?
+03  Как тебя зовут?
+    What is your inf name?
+04  Извините
+    Excuse f me
+05  Извини 
+    Excuse inf me
+06  У меня есть работа
+    I have a job
+07  У вас есть дети?
+    Do you f have children?
+08  У тебя есть деньги
+    Do you inf have money?
+09  мне нравится, я люблю
+    I like, I love
+10  Мне нравится Москва. Я люблю Москву.
+    I like Moscow. I love Moscow.
+11  Мне не нравится кефир. Я не люблю кефир.
+    I don't like kefir. 
+12  говорить
+    to talk
+13  Я немного говорю по-русски 
+    I can speak a little Russian
+14  жить
+    to live
+15  Я живу в России
+    I live in Russia
+16  работать 
+    I work
+17  Я работаю в Москве
+    I work in Moscow
+18  отдыхать
+    to relax
+19  я отдыхаю
+    I'm relaxing
+20  вставать
+    to get up
+21  Я встаю в шесть утра 
+    I get up at six in the morning
+22  ложиться спать
+    to go to bed
+23  Я ложусь спать в одиннадцать вечера
+    I go to bed at 11 in the evening
+24  завтракать
+    to have breakfast
+25  Я завтракаю дома
+    I have breakfast at home
+26  обедать
+    to have lunch
