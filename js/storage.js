@@ -104,7 +104,7 @@
     getTimeStamp(cardSetHash) {
       let timeStamp = 0
 
-      let cardSetInfo = this.data[cardSetHash]
+      let cardSetInfo = this.data.cardSets[cardSetHash]
       if (cardSetInfo) {
         timeStamp = cardSetInfo.timestamp
       }
@@ -133,10 +133,9 @@
     }
 
 
-    ///// NO LONGER USED
-    // getCardSet(cardSetHash) {      
-    //   return this.data.cardSets[cardSetHash] // may be undefined
-    // }
+    getCardArray(cardSetHash) {
+      return this.data.cardSets[cardSetHash].cards
+    }
 
 
     includeCardSet(cardSetInfo) {
@@ -164,73 +163,6 @@
       return this.data.usersInfo
         // ))
     }
-
-
-    //////// NOT NEEDED. JUST CALL save()
-    // rememberCard(username, cardSetHash, cardIndex, state) {
-    //   let userData = this.data.usersInfo.users[username]
-    //   let cardSetStatistics = userData.statistics[set]
-    //   let cardSet = this.data[cardSetHash]
-
-    //   if (!cardSet) {
-    //     cardSet = {}
-    //   }
-    //   cardSet[cardIndex].known = state
-    //   this.save()
-    // }
-
-
-    ///// NOW HANDLED BY User
-    // getUserStatistics(username, cardSetHash) {
-    //   let userData = this.data.usersInfo.users[username]
-    //   // { pass: password
-    //   // , customSets: []
-    //   // , timestamp: + new Date()
-    //   // 
-    //   // , statistics: {
-    //   //     <cardSetHash>: {
-    //   //       <cardId>: {
-    //   //         known: <boolean>
-    //   //       , repeats: <integer>
-    //   //       , recent: [ <boolean> ... ]
-    //   //       }
-    //   //     , ...
-    //   //     }
-    //   //   , ...
-    //   //   }
-    //   //   
-    //   // , name: userName
-    //   // }
-
-    //   let statistics = userData.statistics[cardSetHash]
-    //   if (!statistics) {
-    //     statistics = {}
-    //     userData.statistics[cardSetHash] = statistics
-    //   }
-
-    //   return statistics
-    // }
-
-    ///// NOT NEEDED. JUST CALL save()
-    // saveUserStatistics(username, cardSetHash, statistics) {    
-    //   let userData = this.data.usersInfo.users[username]
-    //   // { pass: password
-    //   // , customSets: []
-    //   // , timestamp: + new Date()
-    //   // , statistics: {}
-    //   // , name: userName
-    //   // }
-
-    //   userData.statistics[cardSetHash] = statistics
-    //   this.save()
-    // }
-
-
-    ///// NOT NEEDED. JUST CALL save()
-    // setUsers(usersInfo) {
-    //   this.data.usersInfo = JSON.parse(JSON.stringify(usersInfo))
-    //   this.save()
-    // }
 
 
     save() {

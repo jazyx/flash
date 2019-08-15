@@ -34,7 +34,7 @@
      * @param  {<type>}       cardSetsArray [ <CardSet>, ... ]
      * @param  {Function}     callback      flash.callbackFromSelector()
      */
-    constructor(data, cardSetsArray, callback) {
+    constructor(data, callback) {
       let section = document.querySelector(data.selector)
       this.ul = section.querySelector("ul")
       this.data = data
@@ -43,41 +43,33 @@
       // , audio:    "audio/"
       // , ... }
       
-      this.cardSets = cardSetsArray
       this.callback = callback
 
       this.ul.onclick = this.selectCardSet.bind(this)
       this.hashLUT = {}
-
-      this.injectHTML()
     }
 
 
-    injectHTML() {
+    adoptCardSets(cardSetsArray, user) {
+      this.cardSets = cardSetsArray
+      this.injectHTML(user)
+    }
+
+
+    injectHTML(user) {
       while (this.ul.firstChild) {
         this.ul.firstChild.remove();
       }
 
       this.cardSets.forEach(cardSet => {
         let info = cardSet.info
-        // let ratios = cardSet.getRatios()
+        let hash = info.hash
 
         let li = document.createElement("li")
-        li.id = info.hash
+        li.id = hash
 
         this.hashLUT[info.hash] = cardSet
 
-        // li.innerHTML = `
-        // <a class="action cardset" href="#">
-        //   <div class="progress" style="width:${ratios.percent}"></div>
-        //   <img src="${info.icon}">
-        //   <div class="text">
-        //     <span class="title">
-        //       ${info.name}</span>
-        //     <span class="percent">${ratios.rounded}</span>
-        //   </div>
-        // </a>
-        // `
         li.innerHTML = `
         <a class="action cardset" href="#">
           <div class="progress"></div>
@@ -85,12 +77,14 @@
           <div class="text">
             <span class="title">
               ${info.name}</span>
-            <span class="percent"></span>
+            <span class="percent">0%</span>
           </div>
         </a>
         `
 
         this.ul.appendChild(li)
+        
+        user.getPercentKnown(hash)
       })
     }
 
@@ -110,8 +104,6 @@
 
     selectCardSet(event) {
       event.preventDefault()
-
-      document.body.classList.remove("complete")
 
       let target = event.target
       let action = (target.classList.contains("percent"))
@@ -136,6 +128,15 @@
     updatePercentage(cardSetData) {
       let ratios = this.getRatios(cardSetData)
       let li = document.getElementById(cardSetData.hash)
+      let div = li.querySelector("div.progress")
+      let percent = li.querySelector("span.percent")
+      div.style.width = ratios.percent
+      percent.innerText = ratios.rounded
+    }
+
+
+    updatePercent(cardSetHash, ratios) {
+      let li = document.getElementById(cardSetHash)
       let div = li.querySelector("div.progress")
       let percent = li.querySelector("span.percent")
       div.style.width = ratios.percent

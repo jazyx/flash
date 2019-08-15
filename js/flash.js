@@ -76,8 +76,11 @@
       let data = this.data
 
       // TODO: Deal with registered users
+      let callback = this.callbackFromSelector.bind(this)
+      this.selector = new this.classes.Select(this.data, callback)
+
       this.storage = new this.classes.Storage()
-      this.users = new this.classes.Users(this.storage)
+      this.users = new this.classes.Users(this.storage, this.selector)
       this.user = this.users.getCurrentUser()
       this.navigation = new this.classes.Navigation()
 
@@ -90,7 +93,7 @@
       this.jsonDone = false
       this.timeOut = setTimeout(this.hideSplash.bind(this),data.delay)
 
-      let callback = this.updateList.bind(this)
+      callback = this.updateList.bind(this)
       this.listView = new this.classes.ListView(data.list, callback)
     }
 
@@ -157,11 +160,7 @@
       })
 
       let callback = this.callbackFromSelector.bind(this)
-      this.selector = new this.classes.Select(
-        this.data
-      , cardSetData
-      , callback
-      )
+      this.selector.adoptCardSets(cardSetData, this.user)
 
       this.jsonDone = true
       this.hideSplash(true)

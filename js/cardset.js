@@ -93,6 +93,7 @@
       this.callback = options.callback
       this.storage  = options.storage
       this.Ajax     = options.Ajax
+      this.user     = options.user
 
       if (options.info.cards) {
         // There may be no Internet access, or PHP may have failed.
@@ -113,11 +114,9 @@
         this.syncWithServer(options.info, options.data)
       }
 
-      this.user= options.user
-
       this.cardArray = this.info.cards
       // May be repopulated in treatPhrases
-      this.total = this.cardArray.length
+      // this.total = this.cardArray.length
 
       this.setCardsToPractise()
       // this.cardsToPractise
@@ -136,9 +135,13 @@
       let setInfo = this.info = this.unpackServerInfo(info, data)
 
       let timeStamp = this.storage.getTimeStamp(setInfo.hash)
-      if (timeStamp && timeStamp !== setInfo.timestamp) {
-        // phrases.txt has already been downloaded, but it's changed
-        this.getPhrases()
+      if (timeStamp) {
+        if (timeStamp !== setInfo.timestamp) {
+          // phrases.txt has already been downloaded, but it's changed
+          this.getPhrases()
+        } else {
+          this.getPhrasesFromLocalStorage()
+        }
       }
     }
 
@@ -156,7 +159,7 @@
       let folder = path.join("/") + "/"
       let name = path.pop()
 
-      // Roplace _s with spaces, a terminal Q with ?, and Capitalize
+      // Replace _s with spaces, a terminal Q with ?, and Capitalize
       name = name.replace(/^\d+-/, "").replace(/Q$/, "?").replace(/_/g, " ")
       name = name[0].toUpperCase() + name.substring(1)
 
@@ -360,7 +363,8 @@
      */
     mergeWithExistingCardArray(phraseArray) {
       this.cardArray.length = 0
-      this.total = this.cardArray.length = phraseArray.length
+      // this.total = 
+      this.cardArray.length = phraseArray.length
       
       phraseArray.forEach((phraseData, index) => {
         this.cardArray[index] = phraseData
@@ -373,6 +377,12 @@
       )
 
       this.setCardsToPractise()
+    }
+
+
+    getPhrasesFromLocalStorage() {
+      let cardArray = this.storage.getCardArray(this.info.hash)
+      this.info.cards = cardArray
     }
 
 
@@ -398,19 +408,13 @@
     }
 
 
-    // getPercent() {
-    //   return ( this.total - this.cardsToPractise.length ) * 100
-    //          / this.total
-    // }
-
-
     /**
      * { function_description }
      *
      * @param      {Function}  callback  The callback
      */
     lightsUp(callback) {
-      if (this.total) {
+      if (this.cardArray.length) {
         this.raiseTheCurtain(callback)
 
       } else {

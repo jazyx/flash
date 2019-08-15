@@ -207,7 +207,7 @@ div.done {
 #selector li div.progress {
   position: absolute;
   top: 0;
-  width: 50%;
+  width: 0%;
   height: 99%;
   background-color: #fff;
   opacity: 0.1;

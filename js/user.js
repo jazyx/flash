@@ -62,8 +62,9 @@
 
 
   class User {
-    constructor(userData, save) {
-      this.save = save
+    constructor(userData, selector, save) {
+      this.selector = selector 
+      this.save  = save
       this.data = userData
       // { name:       <string>
       // , pass:       <string | undefined>
@@ -110,7 +111,7 @@
 
       phraseData.known = state
 
-      this.setRatios(ratios, (state ? 1 : -1)) // ±1
+      this.setRatios(cardSetHash, ratios, (state ? 1 : -1)) // ±1
 
       this.save()
 
@@ -120,8 +121,14 @@
 
     getPercentKnown(cardSetHash) {
       let cardSetStats = this.statistics[cardSetHash]
-      let ratios = cardSetStats.ratios
-      return ratios.raw
+
+      if (cardSetStats) {
+        let ratios = cardSetStats.ratios
+
+        this.selector.updatePercent(cardSetHash, ratios)
+
+        return ratios.raw
+      }
     }
 
 
@@ -134,11 +141,13 @@
     }
 
 
-    setRatios(ratios, deltaKnown) {
+    setRatios(cardSetHash, ratios, deltaKnown) {
       ratios.known  += deltaKnown
       let raw        = ratios.raw = ratios.known * 100 / ratios.total
-      // ratios.percent = raw + "%"
+      ratios.percent = raw + "%"
       ratios.rounded = Math.floor(raw) + "%"
+
+      this.selector.updatePercent(cardSetHash, ratios)
     }
 
 
@@ -221,7 +230,7 @@
 
       ratios.known = known
       ratios.total = total
-      this.setRatios(ratios, 0)
+      this.setRatios(cardSetHash, ratios, 0)
       
       cardSetStats.ratios = ratios
 
@@ -232,9 +241,10 @@
 
 
   jazyx.classes.Users = class Users {
-    constructor(storage) {
+    constructor(storage, selector) {
       this.usersInfo = storage.getUsersInfo()
-      this.save     = storage.save.bind(storage)
+      this.save      = storage.save.bind(storage)
+      this.selector  = selector
 
       // Get pointers to the various parts of usersInfo
       this.mode    = this.usersInfo.mode    // may be undefined
@@ -283,7 +293,11 @@
         this.addUser(userName, undefined, "default")
       }
 
-      this.user = new User(this.users[userName], this.save)
+      this.user = new User(
+        this.users[userName]
+      , this.selector
+      , this.save
+      )
 
       if (!anonymous) {
         this.updateUser()
