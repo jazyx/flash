@@ -1,6 +1,10 @@
 /** ajax.js **
  *
+ * Create a new Ajax object using a URL and a callback, to be informed
+ * when the Ajax operation has completed.
  * 
+ * Create a new GetJSON object to have a JSON object returned instead
+ * of a raw string.
 **/
 
 
@@ -21,7 +25,7 @@
 
 
 
-    let Ajax = jazyx.classes.Ajax = class Ajax {
+  let Ajax = jazyx.classes.Ajax = class Ajax {
     constructor(url, callback) {
       this.callback = callback
 

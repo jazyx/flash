@@ -1,9 +1,21 @@
 /** audio.js **
  *
  * This script contains 3 classes:
- * * AudioPlayer creates an Audio element on the fly, and uses it to
- *   play the files that it is linked to
- * * PlayButton 
+ * - AudioPlayer creates an Audio element on the fly, and uses it to
+ *   play the files that it is linked to. It calls back to the 
+ *   AudioButton when it 
+ *   • has loaded an audio file
+ *   • started playing its audio file
+ *   • finished playing its audio file
+ *   • failed to load a file
+ * - PlayButton changes the appearance of a button, depending on 
+ *   whether an audio file is available for the current card, and
+ *   whether that file is currently playing. It calls back to
+ *   AudioButton:
+ *   • when it is clicked
+ * - AudioButton acts as the go-between for instances of the
+ *   AudioPlayer and the PlayButton. It receives the commands and
+ *   instructs the other instances what to do.
 **/
 
 

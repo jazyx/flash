@@ -195,7 +195,6 @@
       this.mergeWithExistingCardArray(phraseArray)
 
       this.info.cards = this.cardArray
-      this.total = this.cardArray.length
 
       this.storage.includeCardSet(this.info)
 
@@ -207,7 +206,8 @@
 
 
     /**
-     * { function_description }
+     * convertToPhraseArray takes a string with elements on separate
+     * lines and converts it to an array of objects.
      *
      * @param  {string}  rawText is expected to be a string with a
      *                   format like:
@@ -353,11 +353,10 @@
     /**
      * Replaces the current contents of this.cardArray with the
      * phrases from phraseArray, repspecting the order in phraseArray
-     * and carrying across any existing .users data. Any Russian
-     * phrases that were in the original cardArray but which are not
-     * found in phraseArray will be dropped.
-     *
-     * @param   {<type>}   phraseArray  Output of convertToPhraseArray
+     * Any Russian phrases that were in the original cardArray but
+     * which are not found in phraseArray will be dropped.
+     *      *
+     * @param   {array}   phraseArray  Output of convertToPhraseArray
      */
     mergeWithExistingCardArray(phraseArray) {
       this.cardArray.length = 0
@@ -366,6 +365,12 @@
       phraseArray.forEach((phraseData, index) => {
         this.cardArray[index] = phraseData
       })
+
+      this.user.syncStatistics(
+        this.info.hash
+      , this.cardArray
+      , this.vo
+      )
 
       this.setCardsToPractise()
     }
@@ -384,19 +389,26 @@
      */
     setCardsToPractise() {
       this.cardsToPractise = this.cardArray.filter(card => {
-        return !card.known
+        let phrase = card[this.vo]
+        let known  = this.user.getKnownState(this.info.hash, phrase)
+        return !known
       })
 
       this.counter = this.cardsToPractise.length
     }
 
 
-    getPercent() {
-      return ( this.total - this.cardsToPractise.length ) * 100
-             / this.total
-    }
+    // getPercent() {
+    //   return ( this.total - this.cardsToPractise.length ) * 100
+    //          / this.total
+    // }
 
 
+    /**
+     * { function_description }
+     *
+     * @param      {Function}  callback  The callback
+     */
     lightsUp(callback) {
       if (this.total) {
         this.raiseTheCurtain(callback)
@@ -409,12 +421,8 @@
     
 
     raiseTheCurtain(callback) {
-      let ratios = this.user.syncStatistics(
-        this.info.hash
-      , this.cardArray
-      , this.vo
-      )
-      callback(this, ratios.raw)
+      let percent = this.user.getPercentKnown(this.info.hash)
+      callback(this, percent)
     }
 
 
@@ -453,12 +461,11 @@
 
 
     rememberCard(card) {
-      this.callback("showProgress", this.getPercent())
-
       let hash = this.info.hash
       let voPhrase = this.card[this.vo]
+      let percent = this.user.setKnownState(hash, voPhrase, true) 
 
-      this.user.setKnownState(hash, voPhrase, true) 
+      this.callback("showProgress", percent)
     }
 
 
@@ -482,26 +489,26 @@
         some text`
 
       let b = `
-01
-ru  Как вас зовут?
-en  What is your f name?
-fr  Quel est votre nom?
+        01
+        ru  Как вас зовут?
+        en  What is your f name?
+        fr  Quel est votre nom?
 
-02  Тебя зовут...
-en  Your inf name is...
-fr  Tu t'appelles...
+        02  Тебя зовут...
+        en  Your inf name is...
+        fr  Tu t'appelles...
 
-03  Извините
-Excuse f me — This text has been changed
+        03  Извините
+        Excuse f me — This text has been changed
 
-05
-некоторый текст
-some text
-06
-Русский
-Russian`
+        05
+        некоторый текст
+        some text
+        06
+        Русский
+        Russian`
 
-    let c = this.convertToPhraseArray(a)
+      let c = this.convertToPhraseArray(a)
       this.mergeWithExistingCardArray(c)
 
       this.cardArray.forEach(cardData => {

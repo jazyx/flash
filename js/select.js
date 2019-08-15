@@ -22,7 +22,20 @@
 
 
   jazyx.classes.Select = class Select {
-    constructor(section, data, cardSetsArray, callback) {
+    /**
+     * Called by getCardSetIcons in Flash.js, after an Ajax call to
+     * the server for cardSetData.
+     *
+     * @param  {HTMLELement}   section      section#selector
+     * @param  {object}        data         { ...
+     *                                      , phrases:  "phrases.txt"
+     *                                      , audio:    "audio/"
+     *                                      , ... }
+     * @param  {<type>}       cardSetsArray [ <CardSet>, ... ]
+     * @param  {Function}     callback      flash.callbackFromSelector()
+     */
+    constructor(data, cardSetsArray, callback) {
+      let section = document.querySelector(data.selector)
       this.ul = section.querySelector("ul")
       this.data = data
       // { ...
@@ -44,7 +57,6 @@
       while (this.ul.firstChild) {
         this.ul.firstChild.remove();
       }
-
 
       this.cardSets.forEach(cardSet => {
         let info = cardSet.info
@@ -98,6 +110,8 @@
 
     selectCardSet(event) {
       event.preventDefault()
+
+      document.body.classList.remove("complete")
 
       let target = event.target
       let action = (target.classList.contains("percent"))

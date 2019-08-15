@@ -16,12 +16,19 @@
 
   /// <<< HARD-CODED
   let data = {
+    // SERVER
     php:      "php/sets.php"
   , phrases:  "phrases.txt"
   , audio:    "audio/"
+    // BROWSER
   , audioButton: "[href='#audio']"
+  , card:        "#card"
+  , list:        "#list"
+  , selector:    "#selector"
+  , delay:       1000
   }
   /// HARD-CODED >>>
+
 
 
 
@@ -32,7 +39,10 @@
       // Storage
       // Ajax
       // GetJSON
+      // Navigation
       // Select
+      // ListView
+      // CardView
       // AudioPlayer
       // PlayButton
       // AudioButton
@@ -42,8 +52,13 @@
       // { php:      "php/sets.php"
       // , phrases:  "phrases.txt"
       // , audio:    "audio/"
+      // 
       // , audioButton: "[href='#audio']"
-      // , stats:    "#stats" }
+      // , list:        "#list"
+      // , card:        "#card"
+      // , selector:    "#selector"
+      // , delay:       1000
+      // }
 
       this.initialize()
       // creates the properties:
@@ -58,55 +73,25 @@
 
 
     initialize() {
-      /// <<< HARD-CODED
-      let delay = 1000
-      /// HARD-CODED >>>
-
-      this.setupHTMLObjects()
+      let data = this.data
 
       // TODO: Deal with registered users
       this.storage = new this.classes.Storage()
       this.users = new this.classes.Users(this.storage)
       this.user = this.users.getCurrentUser()
-
-      // console.log(this.user)
+      this.navigation = new this.classes.Navigation()
 
       let player = new this.classes.AudioPlayer()
-      let button = new this.classes.PlayButton(this.data.audioButton)
-      this.audioButton = new this.classes.AudioButton(player, button)
+      let button = new this.classes.PlayButton(data.audioButton)
+      let audioButton = new this.classes.AudioButton(player, button)
+      this.cardView = new this.classes.CardView(data.card, audioButton)
 
       this.getCardSetJSON()
       this.jsonDone = false
-      this.timeOut = setTimeout(this.hideSplash.bind(this), delay)
+      this.timeOut = setTimeout(this.hideSplash.bind(this),data.delay)
 
-      let callback = this.updateStats.bind(this)
-      this.stats = new this.classes.ListView("#stats", callback)
-    }
-
-
-    setupHTMLObjects() {
-      let actions = [].slice.call(document.querySelectorAll(".action"))
-      let listener = this.treatAction.bind(this)
-      actions.forEach(actionLink => {
-        actionLink.addEventListener("click", listener, false)
-      })
-
-      this.sections = this.getElements("section")
-      this.buttons  = document.querySelector(".buttons")
-
-      this.frame    = document.querySelector("div.frame")
-      this.stimulus = document.querySelector("div.front")
-      this.response = document.querySelector("div.back")
-      this.progress = document.querySelector("div.done")  
-      
-      this.minCount = 10
-      this.cueCode  = "en"
-      this.cueIsRussian = (this.cueCode === "ru")
-
-      this.complete = false
-
-      // let url = this.folder + this.fileName
-      // new this.ParseText(url, this.treatJSON.bind(this))
+      let callback = this.updateList.bind(this)
+      this.listView = new this.classes.ListView(data.list, callback)
     }
 
 
@@ -171,17 +156,28 @@
         return (cardSet1.icon > cardSet2.icon) * 2 - 1
       })
 
-      let section = this.sections.selector
       let callback = this.callbackFromSelector.bind(this)
       this.selector = new this.classes.Select(
-        section
-      , this.data
+        this.data
       , cardSetData
       , callback
       )
 
       this.jsonDone = true
       this.hideSplash(true)
+    }
+
+
+    hideSplash(selectorIsSet) {
+      if (selectorIsSet) {
+        if (this.timeOut) {
+          return this.jsonDone = true
+        }
+      } else if (!this.jsonDone) {
+        return this.timeOut = 0
+      }
+
+      this.navigation.showSection("selector")
     }
 
 
@@ -255,9 +251,9 @@
     }
 
 
-    callbackFromCardset(action) {
+    callbackFromCardset() {
       let data = [...arguments]
-      data.shift() // removes the `action` argument
+      let action = data.shift()
 
       if (typeof this[action] === "function") {
         this[action].apply(this, data)
@@ -266,7 +262,7 @@
 
 
     /**
-     * { function_description }
+     * Called by a click on a cardset list item at the Selector screen
      *
      * @param  {object}  cardSetData  { name:    "Set"
      *                                , phrases: "data/set/phrases.txt"
@@ -274,7 +270,7 @@
      *                                , hash:    <number>
      *                                , icon:    "data/set/icon.svg"
      *                                }
-     * @param  {string}  action       < "showStats"
+     * @param  {string}  action       < "showList"
      *                                | "showCards"
      *                                | "percentKnown"
      *                                >
@@ -325,160 +321,25 @@
 
     showCards(cardSet, percent) {
       this.cardSet = cardSet
-      this.audioButton.setFolder(cardSet.info.audio)
-      this.showItem("card", this.sections)
-      this.showProgress(percent)
-      this.showNext()
+      this.cardView.adopt(cardSet, percent)
+      this.navigation.showSection("card")
     }
 
 
     showList(cardData) {
-      this.stats.show(cardData)
-      this.showItem("stats", this.sections)
-    }
-
-
-    // SECTIONS // SECTIONS // SECTIONS // SECTIONS // SECTIONS //
-
-    getElements(selector) {
-      let elements = {}
-      let array = [].slice.call(document.querySelectorAll(selector))
-
-      array.forEach(element => {
-        elements[element.id] = element
-      })
-
-      return elements
-    }
-
-
-    hideSplash(selectorIsSet) {
-      if (selectorIsSet) {
-        if (this.timeOut) {
-          return this.jsonDone = true
-        }
-      } else if (!this.jsonDone) {
-        return this.timeOut = 0
-      }
-
-      this.showItem("selector", this.sections)
-    }
-
-
-    showItem(id, group) {
-      switch (id) {
-        case "selector":
-          this.selector.refresh()
-        break
-      }
-
-      let ids = Object.keys(group)
-
-      ids.forEach(itemId => {
-        let item = group[itemId]
-        if (itemId === id) {
-          item.classList.add("active")
-        } else {
-          item.classList.remove("active")
-        }
-      })
-    }
-
-    // ACTIONS // ACTIONS // ACTIONS // ACTIONS // ACTIONS // ACTIONS 
-
-    treatAction(event) {
-      event.preventDefault()
-
-      if (this.complete) {
-        return
-      }
-
-      let target = event.target
-      while (target && target.tagName !== "A") {
-        target = target.parentNode
-      }
-
-      if (!target) {
-        return
-      }
-
-      let href = target.href
-      let index = href.indexOf("#") + 1
-      let hash = href.substring(index)
-
-      switch (hash) {
-        case "select":
-          this.showItem("selector", this.sections)
-        break
-        case "turn_back":
-          this.turnBack()
-        break
-        case "turn":
-          this.turnCard()
-        break
-        case "hint":
-
-        break
-        case "audio":
-
-        break
-        case "learnt":
-          this.showNext(true)
-        break
-        case "repeat":
-          this.showNext()
-        break
-      }
-    }
-
-
-    turnCard() {
-      this.frame.classList.add("response")
-      this.buttons.classList.remove("stimulus")
-      this.buttons.classList.add("response")
-      this.playCue(!this.cueIsRussian)
-    }
-
-
-    turnBack() {
-      this.frame.classList.remove("response")
-      this.buttons.classList.remove("response")
-      this.buttons.classList.add("stimulus")
-      this.playCue(this.cueIsRussian)
-    }
-
-
-    showNext(dontRepeat) {
-      this.card = this.cardSet.getNext(dontRepeat)
-      if (!this.card) {
-        // All the cards have been learnt
-        return this.finish()
-      }
-
-      this.showCue()
-      this.turnBack()
-    }
-
-
-    rememberCard(card) {
-      let setName = this.cardSetData.name
-      let index = this.card.index
-      // Mark the card as known in localStorage. There is no need to
-      // mark it as known in this.cardSet, since it no longer appears 
-      // there.
-
-      this.storage.rememberCard(setName, index, true) 
-      this.showProgress()
+      this.listView.show(cardData)
+      this.navigation.showSection("list")
     }
 
 
     showProgress(percent) {
-      this.progress.style = `width:${percent}%`
+      this.cardView.showProgress(percent)
     }
 
 
-    updateStats(action, index, state) {
-      console.log("updateStats called. Not obsolete yet?")
+    updateList(action, index, state) {
+      alert("updateList called. Not obsolete yet?")
+
       let setName = this.cardSetData.name
       this.cardSetData.known = this.percentKnown()
 
@@ -489,40 +350,6 @@
           this.storage.rememberCard(setName, index, state)
           this.selector.updatePercentage(this.cardSetData)
       }
-    }
-
-
-    // CUE // CUE // CUE // CUE // CUE // CUE // CUE // CUE // CUE //
-
-    showCue() {
-      let stimulus
-        , response 
-
-      [stimulus, response] = this.cueIsRussian
-                           ? [this.card.ru, this.card[this.cueCode]]
-                           : [this.card[this.cueCode], this.card.ru]
-
-      this.stimulus.innerHTML = stimulus
-      this.response.innerHTML = response
-    }
-
-
-    playCue(isRussian) {
-      if (isRussian) {
-        this.audioButton.link(this.card.audio, "play")
-      } else {
-        this.audioButton.toggleEnabled(false)
-      }
-    }
-
-
-    finish() {
-      this.response.innerHTML = `
-        <p>Congratulations!<br>
-        You've learnt all the cards.</p>
-      `
-      this.complete = true
-      document.body.classList.add("complete")
     }
   }
 

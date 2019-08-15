@@ -72,6 +72,11 @@
       // , statistics: {
       //     <set name>: {
       //       timestamp: <integer>
+      //     , ratios: {
+      //         raw: <float>
+      //       , percent: "<float>%"
+      //       , rounded: "<integer>%"
+      //       }
       //     , <card id>: {
       //         known:   <boolean>
       //       , repeats: <integer>
@@ -86,8 +91,16 @@
     }
 
 
+    /**
+     * Called by CardSet.rememberCard()
+     *
+     * @param  {integer}  cardSetHash  The card set hash
+     * @param  {string}   voPhrase     The vo phrase
+     * @param  {boolean}  state        true if card is now known
+     */
     setKnownState(cardSetHash, voPhrase, state) {
       let cardSetStats = this.statistics[cardSetHash]
+      let ratios = cardSetStats.ratios
       let phraseData = cardSetStats[voPhrase]
 
       if (!phraseData) {
@@ -97,59 +110,95 @@
 
       phraseData.known = state
 
+      this.setRatios(ratios, (state ? 1 : -1)) // ±1
+
       this.save()
+
+      return ratios.raw
     }
 
 
-    getRatios(cardSetHash) {
+    getPercentKnown(cardSetHash) {
+      let cardSetStats = this.statistics[cardSetHash]
+      let ratios = cardSetStats.ratios
+      return ratios.raw
+    }
+
+
+    getKnownState(cardSetHash, voPhrase) {
+      let cardSetStats = this.statistics[cardSetHash]
+      let phraseData = cardSetStats[voPhrase]
+      let known = phraseData.known
+
+      return known
+    }
+
+
+    setRatios(ratios, deltaKnown) {
+      ratios.known  += deltaKnown
+      let raw        = ratios.raw = ratios.known * 100 / ratios.total
+      // ratios.percent = raw + "%"
+      ratios.rounded = Math.floor(raw) + "%"
+    }
+
+
+    // getRatios(cardSetHash) {
+    //   let cardSetStats = this.statistics[cardSetHash]
+    //   let ratios = {}
+    //   let total = 1
+    
+    //   let known = 0
+
+    //   if (!cardSetStats) {
+    //     // This set has not been loaded yet. It has not been started.
+
+    //   } else {
+    //     let keys = Object.keys(cardSetStats)
+    //     let total = keys.length ? keys.length : 1
+    //     let phraseData
+
+    //     keys.forEach(phrase => {
+    //       phraseData = cardSetStats[phrase]
+    //       // { known: <boolean>
+    //       // , repeats: <integer>
+    //       // , recent: [ ... ]
+    //       // }
+          
+    //       known += !!phraseData.known
+    //     })
+    //   }
+
+    //   known = known * 100 / total // now its %
+
+    //   ratios.raw     = known
+    //   ratios.percent = known + "%"
+    //   ratios.rounded = Math.round(known) + "%"
+
+    //   // this.save()
+
+    //   return ratios
+    // }
+
+
+    /**
+     * Called by CardSet.raiseTheCurtain()
+     *
+     * @param {integer} cardSetHash 
+     * @param {<type>}  cardSetArray [{ ru:    "<p>некоторый текст</p>"
+     *                                , en:    "<p>some text</p>"
+     *                                , audio: "XX.mp3"                                 , audio: "XX.mp3"
+     *                                , index: <integer>
+     *                                }
+     *                               , ...
+     *                               ]  
+     * @param  {<type>}  voCode      "ru" or other language code
+     */
+    syncStatistics(cardSetHash, cardSetArray, voCode) {
+      let total = cardSetArray.length
+      let known = 0
       let cardSetStats = this.statistics[cardSetHash]
       let ratios = {}
-      let total = 1
-    
-      let known = 0
-
-      if (!cardSetStats) {
-        // This set has not been loaded yet. It has not been started.
-
-      } else {
-        let keys = Object.keys(cardSetStats)
-        let total = keys.length ? keys.length : 1
-        let phraseData
-
-        keys.forEach(phrase => {
-          phraseData = cardSetStats[phrase]
-          // { known: <boolean>
-          // , repeats: <integer>
-          // , recent: [ ... ]
-          // }
-          
-          known += !!phraseData.known
-        })
-      }
-
-      known = known * 100 / total // now its %
-
-      ratios.raw     = known
-      ratios.percent = known + "%"
-      ratios.rounded = Math.round(known) + "%"
-
-      // this.save()
-
-      return ratios
-    }
-
-
-    syncStatistics(cardSetHash, cardSetArray, voCode) {
-      // // cardSetArray has the format:
-      // [ { ru:       "<p>некоторый текст</p>"
-      //   , en:       "<p>some text</p>"
-      //   , audio:    "XX.mp3"
-      //   , index:   <integer>
-      //   }
-      // , ...
-      // ]
-
-      let cardSetStats = this.statistics[cardSetHash]
+      let raw
 
       if (!cardSetStats) {
         cardSetStats = {}
@@ -160,15 +209,23 @@
         let phrase = cardInfo[voCode]
         let phraseData = cardSetStats[phrase]
 
-        if (!phraseData) {
+        if (phraseData) {
+          known += phraseData.known
+
+        } else {
+          // This card hasn't been seen yet
           phraseData = { known: 0, repeats: 0, recent: [] }
           cardSetStats[phrase] = phraseData
-        }
+        } 
       })
 
-      this.save()
+      ratios.known = known
+      ratios.total = total
+      this.setRatios(ratios, 0)
+      
+      cardSetStats.ratios = ratios
 
-      return this.getRatios()
+      this.save()
     }
   }
 

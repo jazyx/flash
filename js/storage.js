@@ -28,10 +28,65 @@
       
       let dataString = this.storage.getItem(this.storageName)
 
+      // { cardSets: {
+      //    <sethash>: {
+      //       audio: <relative path to audio folder>
+      //       cards: [{
+      //           audio: "<integer>.mp3"
+      //         , en:    <HTML string>
+      //         , index: <integer>
+      //         , ru:    <HTML string>
+      //         }
+      //       , ...]
+      //       customKeys: [
+      //         
+      //       ]
+      //       hash:       <integer>
+      //       icon:       <relative path to icon for this set>
+      //       name:       <string>
+      //       phrases:    <relative path to phrases.txt>
+      //       svg:        <may be SVG string for displaying icon>
+      //       timestamp:  <integer>
+      //     }
+      //   , ...
+      //   }
+      // , usersInfo:
+      //   { default: <user name>
+      //   , mode: "#AutoloadDefault"
+      //   , users:
+      //     { <user name>:
+      //       { customSets: []
+      //       , name: <user name>
+      //       , statistics: {
+      //           <sethash>: {
+      //             ratios: {
+      //               raw:     <float>
+      //             , percent: "<integer>%"
+      //             , rounded: "<integer>%"
+      //             }
+      //           , <HTML in Russian>: {
+      //                known: <boolean>
+      //              , recent: [
+      //                  
+      //                ]
+      //              , repeats: <integer>
+      //              }
+      //             , ...
+      //             }
+      //           }
+      //         , ...
+      //         }
+      //       , timestamp: <integer>
+      //       }
+      //     }
+      //   }
+      // }
+
       if (dataString) {
         try {
           this.data = JSON.parse(dataString)
           // TODO? Check integrity of this.data
+          console.log("storage data:", this.data)
           return
 
         } catch (error) {

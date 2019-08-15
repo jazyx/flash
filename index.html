@@ -26,7 +26,7 @@
       <ul></ul>
     </section>
 
-    <section id="stats">
+    <section id="list">
       <div class="language">
         <input type="radio" name="language" id="ru" checked>
         <label for="ru">Русский</label>
@@ -42,7 +42,7 @@
         <a href="#select-all" class="action" id="select-all">Select all</a>
         <a href="#deselect-all" class="action" id="deselect-all">Deselect all</a>
         <a href="#revert" class="action" id="revert">Cancel</a>
-        <a href="#close-stats" class="action" id="close">OK</a>
+        <a href="#close-list" class="action" id="close">OK</a>
       </div>
     </section>
 
@@ -63,50 +63,53 @@
       </div>
 
       <div class="buttons stimulus">
-          <a href="#hint" class="action stimulus">
-            <img src="img/hint.svg">
-          </a>
-          <a href="#turn_back" class="action response">
-            <img src="img/turn_back.svg">
-          </a>
+        <a href="#hint" class="action stimulus">
+          <img src="img/hint.svg">
+        </a>
+        <a href="#turn_back" class="action response">
+          <img src="img/turn_back.svg">
+        </a>
 
-          <a href="#audio" class="action">
-            <img src="img/audio.svg">
-          </a>
+        <a href="#audio" class="action">
+          <img src="img/audio.svg">
+        </a>
 
-          <a href="#null" class="action stimulus">
-            <img src="img/spacer.svg">
-          </a>
-          <a href="#learnt" class="action response">
-            <img src="img/learnt.svg">
-          </a>
+        <a href="#null" class="action stimulus">
+          <img src="img/spacer.svg">
+        </a>
+        <a href="#learnt" class="action response">
+          <img src="img/learnt.svg">
+        </a>
 
-          <a href="#turn" class="action stimulus">
-            <img src="img/turn.svg">
-          </a>
-          <a href="#repeat" class="action response">
-            <img src="img/repeat.svg">
-          </a>
+        <a href="#turn" class="action stimulus">
+          <img src="img/turn.svg">
+        </a>
+        <a href="#repeat" class="action response">
+          <img src="img/repeat.svg">
+        </a>
       </div>
+
+      <a href="#selector" class="navigate" id="showSelection">
+        <img src="img/select.svg">
+      </a>
     </section>
 
     <div class="settings">
       <!-- TODO -->
     </div>
-
-    <a href="#select" class="action" id="showSelection">
-      <img src="img/select.svg">
-    </a>
   </main>
 
 <script src="js/shim.js"></script>
 <script src="js/storage.js"></script>
 <script src="js/user.js"></script>
 <script src="js/ajax.js"></script>
+<script src="js/navigation.js"></script>
+<script src="js/settings.js"></script>
 <script src="js/cardset.js"></script>
 <script src="js/select.js"></script>
 <script src="js/listview.js"></script>
 <script src="js/audio.js"></script>
+<script src="js/cardview.js"></script>
 <script src="js/flash.js"></script>
 </body>
 </html>
