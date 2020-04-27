@@ -43,17 +43,61 @@
     treatStateChange () {
       let status = this.xobj.status
       let state = this.xobj.readyState
+      let url = this.xobj.responseURL
 
       if (state == 4) {
         if (status == "200") {
           // Required use of an anonymous callback as .open will NOT
           // return a value but simply returns undefined in
           // asynchronous mode
-          this.callback(null, this.xobj.responseText)
+          this.callback(null, this.xobj.responseText, url)
 
         } else {
-          this.callback(status)
+          status = this.xobj.statusText
+          this.callback(status, null, url)
         }
+      }
+    }
+  }
+
+
+
+
+  jazyx.classes.BatchAjax = class BatchAjax {
+    constructor(url, callback) { 
+      this.callback = callback
+
+      if (!(Array.isArray(url))) {
+        url = [url]
+      }
+
+      this.startBatchOperation(url, callback)
+    }
+
+
+    startBatchOperation(urlArray) {
+      let callback = this.batchCallback.bind(this)
+
+      this.expected = urlArray.length
+      this.results  = []
+
+      urlArray.forEach(url => {
+        new Ajax(url, callback)
+      })
+    }
+
+
+    batchCallback(error, result, url) {
+      let report = {
+        error: error
+      , url:   url
+      , text:  result
+      }
+
+      this.results.push(report)
+
+      if (!(--this.expected)) {
+        this.callback(null, this.results)
       }
     }
   }

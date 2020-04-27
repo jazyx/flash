@@ -20,7 +20,6 @@ String.prototype.toCamelCase = function() {
 }
 
 
-
 Array.prototype.shuffle = function() {
   let countDown = this.length
     , randomIndex;
@@ -36,4 +35,19 @@ Array.prototype.shuffle = function() {
   }
 
   return this // so that we can chain operations
+}
+
+
+
+Array.prototype.deleteItem = function(item, everywhere) {
+  let index
+  while (index = this.indexOf(item), !(index < 0)) {
+    this.splice(index, 1)
+
+    if (!everywhere) {
+      break
+    }
+
+    return this
+  }
 }
